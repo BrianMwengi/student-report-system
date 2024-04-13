@@ -7,7 +7,7 @@ use App\Models\ClassForm;
 new class extends Component {
 
     #[Validate('required|string|max:255')]
-    public $name;
+    public $name = '';
 
     public function submit(): void
     {
@@ -18,7 +18,10 @@ new class extends Component {
         ClassForm::create($validatedData);
 
         // Show a success message or redirect to another page
-        session()->flash('message', 'Class added successfully.');
+        $this->dispatch('success', message: "Class added successfully");
+
+         // Reset the 'name' property
+         $this->name = '';
     }
 
 }; ?>
@@ -27,7 +30,7 @@ new class extends Component {
     <div>
         <h2 class="text-xl font-bold">Add Class</h2>
     
-        <form wire:submit.prevent="submit" class="mt-4">
+        <form wire:submit="submit" class="mt-4">
             <input type="text" id="name" class="form-input @error('name') border-red-500 @enderror" wire:model="name" placeholder="Class Name">
     
             @error('name')
@@ -38,19 +41,14 @@ new class extends Component {
     
             <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
         </form>
-        
-        @if (session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
-            {{ session('message') }}
-        </div>
-    @endif
-    
-    <!-- Display error message if any -->
-    @if (session()->has('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
-            {{ session('error') }}
-        </div>
-    @endif
-    
+        <div x-data="{ open: false, message: ''}" 
+            @success.window="open = true; message=$event.detail.message; setTimeout(() => open = false, 4000)"
+            x-show="open"
+            x-text="message"
+            class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+        <span x-text="message"></span>
+   </div>
+        </div>        
     </div>    
 </div>
+
