@@ -13,6 +13,5 @@ class ClassForm extends Model
     
     protected $fillable = [
         'name',
-        'form',
     ];
 }
