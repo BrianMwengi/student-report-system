@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Component;
 use Livewire\Attributes\Validate;
+use App\Models\ClassForm;
 
 new class extends Component {
 
@@ -37,18 +38,19 @@ new class extends Component {
     
             <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
         </form>
-    
+        
         @if (session()->has('message'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-success-500 text-white font-bold py-2 px-4 rounded">
-                {{ session('message') }}
-            </div>
-        @endif
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+            {{ session('message') }}
+        </div>
+    @endif
     
-        <!-- Display error message if any -->
-        @if (session()->has('error'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-error-500 text-white font-bold py-2 px-4 rounded">
-                {{ session('error') }}
-            </div>
-        @endif
+    <!-- Display error message if any -->
+    @if (session()->has('error'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
+    
     </div>    
 </div>
