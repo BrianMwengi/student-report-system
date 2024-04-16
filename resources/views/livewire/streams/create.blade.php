@@ -3,11 +3,12 @@
 use Livewire\Volt\Component;
 use Livewire\Attributes\Validate;
 use App\Models\Stream;
+use App\Models\ClassForm;
 
 new class extends Component {
     #[Validate('required|string|max:255')]
     public $name = '';
-    #[Validate('required|exists:classes,id')]
+    #[Validate('required|exists:class_forms,id')]
     public $class_id ='';
 
     public function submit(): void
@@ -20,6 +21,15 @@ new class extends Component {
 
         // Show a success message or redirect to another page
         $this->dispatch('success', message: "Stream added successfully!");
+    }
+
+    public function with(): array
+    {
+        $class_forms = ClassForm::all();
+
+        return [ 
+            'class_forms' => $class_forms,
+        ];
     }
 }; ?>
 
@@ -41,7 +51,7 @@ new class extends Component {
             <div class="form-group mt-4">
                 <select class="form-select @error('class_id') border-red-500 @enderror" wire:model="class_id">
                     <option value="">Select Class</option>
-                    @foreach ($classes as $class)
+                    @foreach ($class_forms as $class)
                         <option value="{{ $class->id }}">{{ $class->name }}</option>
                     @endforeach
                 </select>
