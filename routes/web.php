@@ -14,6 +14,10 @@ Route::get('subjects', [SubjectController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('subjects'); 
 
+Route::get('streams', [StreamController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('streams'); 
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
