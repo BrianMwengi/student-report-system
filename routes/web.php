@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StreamController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ClassFormController;
 
