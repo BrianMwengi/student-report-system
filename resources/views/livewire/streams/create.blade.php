@@ -21,6 +21,10 @@ new class extends Component {
 
         // Show a success message or redirect to another page
         $this->dispatch('success', message: "Stream added successfully!");
+
+        // Reset the form fields
+        $this->name = '';
+        $this->class_id = '';
     }
 
     public function with(): array
