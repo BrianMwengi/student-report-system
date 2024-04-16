@@ -15,7 +15,7 @@ class Stream extends Model
         'class_id',
     ];
 
-    public function classForm()
+    public function classForm(): BelongsTo
     {
         return $this->belongsTo(ClassForm::class, 'class_id');
     }
