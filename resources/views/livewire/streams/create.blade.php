@@ -10,7 +10,7 @@ new class extends Component {
     #[Validate('required|exists:classes,id')]
     public $class_id ='';
 
-    public function submit()
+    public function submit(): void
     {
         // Validation rules
         $validatedData = $this->validate();
