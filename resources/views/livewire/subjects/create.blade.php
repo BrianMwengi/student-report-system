@@ -16,9 +16,9 @@ new class extends Component {
         Subject::create($validatedData);
 
         // Show a success message or redirect to another page
-        $this->dispatch('success', message: "Subject added successfully!");
-
-        // Reset the input field
+         $this->dispatch('success', message: "Subject added successfully!");
+        
+         // Reset the input field
         $this->name = '';
     }
 }; ?>
@@ -44,13 +44,15 @@ new class extends Component {
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
                     </div>
                 </form>
-                <div x-data="{ open: false, message: ''}" 
-                @success.window="open = true; message=$event.detail.message; setTimeout(() => open = false, 4000)"
-                x-show="open"
-                x-text="message"
-                class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
-            <span x-text="message"></span>
-       </div>
+                <div x-data="{ open: false, message: '' }" 
+                     x-cloak
+                    @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+                    x-show="open"
+                    class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+               <span x-text="message"></span>
+           </div>
+           </div>
+           </div>
             </div>
         </div>
     </div>

@@ -41,13 +41,13 @@ new class extends Component {
     
             <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
         </form>
-        <div x-data="{ open: false, message: ''}" 
-            @success.window="open = true; message=$event.detail.message; setTimeout(() => open = false, 4000)"
-            x-show="open"
-            x-text="message"
-            class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
-        <span x-text="message"></span>
-   </div>
+        <div x-data="{ open: false, message: '' }" 
+             x-cloak
+                @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+                x-show="open"
+                class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+               <span x-text="message"></span>
+        </div>
         </div>        
     </div>    
 </div>
