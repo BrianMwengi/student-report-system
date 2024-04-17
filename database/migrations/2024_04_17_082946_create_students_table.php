@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('term')->nullable();
             $table->timestamps();
 
-            $table->foreign('form_id')->references('id')->on('classes')->onDelete('cascade');
+            $table->foreign('form_id')->references('id')->on('class_forms')->onDelete('cascade');
             $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
         });
     }
