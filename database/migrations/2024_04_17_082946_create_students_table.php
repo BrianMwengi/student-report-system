@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->integer('adm_no');
+            $table->unsignedBigInteger('form_id')->nullable();
+            $table->integer('form_sequence_number')->nullable();
+            $table->unsignedBigInteger('stream_id')->nullable();
+            $table->integer('term')->nullable();
             $table->timestamps();
+
+            $table->foreign('form_id')->references('id')->on('classes')->onDelete('cascade');
+            $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
         });
     }
 
