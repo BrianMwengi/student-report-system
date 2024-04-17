@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StreamController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ClassFormController;
 
@@ -16,6 +17,10 @@ Route::get('subjects', [SubjectController::class, 'index'])
     ->name('subjects'); 
 
 Route::get('streams', [StreamController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('streams'); 
+
+Route::get('students', [StudentController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('streams'); 
 
