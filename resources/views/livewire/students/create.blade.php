@@ -20,11 +20,6 @@ new class extends Component {
     public $student;
     public $stream_id;
     public $term;
-
-    public function refreshStudent()
-    {
-        $this->student->refresh();
-    }
    
     public function mount()
     {
@@ -35,32 +30,17 @@ new class extends Component {
 
         public function submit()
         {  
-        // Validate the input fields
-        $this->validate();
+            // Validate the input fields
+            $this->validate();
 
-        // Find the class with the selected class ID
-        $selectedClass = ClassForm::find($this->class);
-
-        // Set the form value based on the selected class or use a default value (e.g., 1)
-        $formValue = $selectedClass ? intval(substr($selectedClass->name, -1)) : 1;
-
-        // Check if stream_id is empty
-        $streamIdValue = $this->stream_id !== '' ? $this->stream_id : null;
-
-        // Find the highest current sequence number for the given form
-        $maxSequenceNumber = Student::where('form', $formValue)->max('form_sequence_number');
-
-        // If there's no students in this form yet, start at 1, otherwise increment the max sequence number
-        $formSequenceNumber = $maxSequenceNumber ? $maxSequenceNumber + 1 : 1;
-
-       // Create the student record
-        $this->student = Student::create([ 
-            'name' => $this->student_name,
-            'adm_no' => $this->adm_no,
-            'stream_id' => $streamIdValue,
-            'form' => $formValue,
-            'form_sequence_number' => $formSequenceNumber,  
-        ]);
+            // Create the student record
+            $this->student = Student::create([ 
+                'name' => $this->student_name,
+                'adm_no' => $this->adm_no,
+                'stream_id' => $streamIdValue,
+                'form' => $formValue,
+                'form_sequence_number' => $formSequenceNumber,  
+            ]);
 
         // Reset the input fields and show a success message
         $this->resetInputFields();
