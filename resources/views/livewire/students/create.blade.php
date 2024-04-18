@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Stream;
 use App\Models\ClassForm;
+use App\Models\Student;
 use Livewire\Attributes\Validate;
 
 new class extends Component {
