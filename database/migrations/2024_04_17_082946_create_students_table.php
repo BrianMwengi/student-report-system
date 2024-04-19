@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('adm_no');
-            $table->unsignedBigInteger('form_id')->nullable();
+            $table->unsignedBigInteger('form')->nullable();
             $table->integer('form_sequence_number')->nullable();
             $table->unsignedBigInteger('stream_id')->nullable();
             $table->integer('term')->nullable();
             $table->timestamps();
 
-            $table->foreign('form_id')->references('id')->on('class_forms')->onDelete('cascade');
+            $table->foreign('form')->references('id')->on('class_forms')->onDelete('cascade');
             $table->foreign('stream_id')->references('id')->on('streams')->onDelete('cascade');
         });
     }
