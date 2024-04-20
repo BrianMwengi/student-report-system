@@ -43,11 +43,11 @@ new class extends Component {
             // Check if stream_id is empty
             $streamIdValue = $this->stream_id !== '' ? $this->stream_id : null;
 
-            // // Find the highest current sequence number for the given form
-            // $maxSequenceNumber = Student::where('form', $formValue)->max('form_sequence_number');
+            // Find the highest current sequence number for the given form
+            $maxSequenceNumber = Student::where('form', $formValue)->max('form_sequence_number');
 
-            // // If there's no students in this form yet, start at 1, otherwise increment the max sequence number
-            // $formSequenceNumber = $maxSequenceNumber ? $maxSequenceNumber + 1 : 1;
+            // If there's no students in this form yet, start at 1, otherwise increment the max sequence number
+            $formSequenceNumber = $maxSequenceNumber ? $maxSequenceNumber + 1 : 1;
 
             // Create the student record
             $this->student = Student::create([ 
@@ -55,32 +55,19 @@ new class extends Component {
                 'adm_no' => $this->adm_no,
                 'stream_id' => $streamIdValue,
                 'form' => $formValue,
-                // 'form_sequence_number' => $formSequenceNumber,  
+                'form_sequence_number' => $formSequenceNumber,  
             ]);
-       
-        
-        // Reset the input fields and show a success message
-        $this->resetInputFields();
 
-        session()->flash('message', 'Student added successfully.');
+        // Show a success message or redirect to another page
+        $this->dispatch('success', message: "Student added successfully!");
 
-        $this->dispatch('storeStudentDetails', [
-            'student_name' => $this->student_name,
-            'adm_no' => $this->adm_no,
-            'class' => $this->class,
-            'stream_id' => $streamIdValue,
-        ]);
-    }
-
-    public function resetInputFields()
-    {
         $this->student_name = '';
         $this->adm_no = '';
         $this->class = '';
         $this->stream_id = '';
         $this->term ='';
-    }
-}; ?>
+        }  
+    }; ?>
 
 <div>
     <div class="container mt-5">
