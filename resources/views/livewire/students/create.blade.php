@@ -29,7 +29,7 @@ new class extends Component {
         $this->class = null;
     }
 
-        public function submit()
+        public function submit(): void
         {  
             // Validate the input fields
             $this->validate();
