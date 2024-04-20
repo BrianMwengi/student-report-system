@@ -66,7 +66,7 @@ new class extends Component {
         $this->class = '';
         $this->stream_id = '';
         $this->term ='';
-        }  
+        }
     }; ?>
 
 <div>
