@@ -25,10 +25,12 @@ new class extends Component {
     public $studentDetails;
     public $stream_id;
 
-    
+    // Mount the component
     public function mount()
     {
+        // Get all subjects
         $this->subjects = Subject::all();
+        // Get the first subject id
         $this->subject_id = $this->subjects->first() ? $this->subjects->first()->id : null;
     }
 
