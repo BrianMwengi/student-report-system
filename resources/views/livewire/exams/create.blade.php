@@ -108,5 +108,11 @@ new class extends Component {
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
+        <div x-data="{ open: false, message: '' }" 
+             x-cloak
+            @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+            x-show="open"
+            class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+        <span x-text="message"></span>
     </div>    
 </div>
