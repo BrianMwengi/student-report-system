@@ -9,7 +9,7 @@ class StudentDetailController extends Controller
 {
     public function index(): View
     {
-        return view('student-primary-details', [
+        return view('studentdetails', [
             //
         ]);
     }    
