@@ -44,7 +44,7 @@ new class extends Component {
                         ->exists();
 
         if ($existingExam) {
-            session()->flash('error', 'This subject has already been added for this student. Please choose a different subject.');
+            $this->dispatch('error', message: "This subject has already been added for this student. Please choose a different subject.'!");
             return;
         }
 
