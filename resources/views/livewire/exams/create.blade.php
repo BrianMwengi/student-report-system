@@ -60,7 +60,7 @@ new class extends Component {
         ]);
 
         // Show a success message or redirect to another page
-        $this->dispatch('success', message: "Subject added successfully!");
+        $this->dispatch('success', message: "Exam details added successfully!");
         
         // Reset the input fields
         $this->subject_id = '';
