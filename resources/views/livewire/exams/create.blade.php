@@ -66,5 +66,47 @@ new class extends Component {
 }; ?>
 
 <div>
-    //
+    <div class="container mt-5">
+        <h2 class="mb-4 text-2xl font-bold">Add Exam Details</h2>
+        <form wire:submit.prevent="submit" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <input type="text" class="form-input" wire:model="adm_no" placeholder="Admission Number" required>
+                @error('adm_no') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <select class="form-select" wire:model="subject_id" required>
+                    <option value="">Select Subject</option>
+                    @foreach ($subjects as $subject)
+                        <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    @endforeach
+                </select>
+                @error('subject_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <input type="text" class="form-input" wire:model="exam1" placeholder="Exam1 (30)" required>
+                @error('exam1') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <input type="text" class="form-input" wire:model="exam2" placeholder="Exam2 (30)" required>
+                @error('exam2') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <input type="text" class="form-input" wire:model="exam3" placeholder="Exam3 (70)" required>
+                @error('exam3') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <input type="text" class="form-input" wire:model="teacher" placeholder="Teacher" required>
+                @error('teacher') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
+    
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>    
 </div>
