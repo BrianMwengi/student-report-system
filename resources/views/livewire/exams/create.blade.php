@@ -63,6 +63,7 @@ new class extends Component {
         $this->exam2 = '';
         $this->exam3 = '';
         $this->teacher = '';
+    }
 }; ?>
 
 <div>
