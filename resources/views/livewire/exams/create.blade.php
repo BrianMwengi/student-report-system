@@ -58,6 +58,9 @@ new class extends Component {
             'exam3' => $this->exam3,
             'teacher' => $this->teacher,
         ]);
+
+        // Show a success message or redirect to another page
+        $this->dispatch('success', message: "Subject added successfully!");
         
         // Reset the input fields
         $this->subject_id = '';
