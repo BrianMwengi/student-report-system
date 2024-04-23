@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('student_details', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id');
+            $table->string('primary_school')->nullable();
+            $table->integer('kcpe_year')->nullable();
+            $table->integer('kcpe_marks')->nullable();
+            $table->integer('kcpe_position')->nullable();
             $table->timestamps();
+
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 
