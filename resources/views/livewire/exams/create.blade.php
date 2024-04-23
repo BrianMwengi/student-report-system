@@ -1,6 +1,7 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\Attributes\Validate;
 use App\Models\Subject;
 use App\Models\Exam;
 use App\Models\Student;
