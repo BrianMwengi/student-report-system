@@ -27,6 +27,7 @@ new class extends Component {
         $this->class_id = '';
     }
 
+    // Load the class forms data 
     public function with(): array
     {
         $class_forms = ClassForm::all();
