@@ -58,7 +58,8 @@ new class extends Component {
             'exam3' => $this->exam3,
             'teacher' => $this->teacher,
         ]);
-
+        
+        // Reset the input fields
         $this->subject_id = '';
         $this->exam1 = '';
         $this->exam2 = '';
