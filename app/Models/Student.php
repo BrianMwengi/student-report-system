@@ -20,14 +20,23 @@ class Student extends Model
         'form_sequence_number',    
     ];
 
+   // This function returns the stream that a student belongs to.
     public function stream(): BelongsTo
     {
         return $this->belongsTo(Stream::class);
     }
 
+    // This function returns the form that a student belongs to.
     public function form(): BelongsTo
     {
         return $this->belongsTo(ClassForm::class, 'form', 'id');
     }
+
+    // This function returns all the exams that belong to a student.
+    public function exams(): HasMany
+    {
+        return $this->hasMany(Exam::class);
+    }
+    
 }
 

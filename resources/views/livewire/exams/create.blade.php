@@ -45,7 +45,7 @@ new class extends Component {
                         ->exists();
 
         if ($existingExam) {
-            $this->dispatch('error', message: "This subject has already been added for this student. Please choose a different subject.'!");
+            session()->flash('error', 'This subject has already been added for this student. Please choose a different subject.');
             return;
         }
 
@@ -120,5 +120,16 @@ new class extends Component {
             x-show="open"
             class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
         <span x-text="message"></span>
+       </div>
+
+       @if (session('error'))
+       <div x-data="{ open: true }" 
+            x-init="setTimeout(() => open = false, 4000)"
+            x-show="open"
+            class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+           {{ session('error') }}
+       </div>
+    @endif
+    </div>
     </div>    
 </div>
