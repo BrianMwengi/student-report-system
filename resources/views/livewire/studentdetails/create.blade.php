@@ -20,14 +20,7 @@ new class extends Component {
     public function submit()
     {
         // Validation rules
-        $validatedData = $this->validate([
-            'name' => 'required|string|max:255',
-            'adm_no' => 'required|integer',
-            'primary_school' => 'required|string|max:255',
-            'kcpe_year' => 'required|integer',
-            'kcpe_marks' => 'required|integer',
-            'kcpe_position' => 'required|integer',
-        ]);
+        $this->validate();
 
         // Find the student or create a new one
         $student = Student::firstOrCreate(
@@ -35,6 +28,7 @@ new class extends Component {
             ['name' => $this->name]
         );
 
+        // Set the student_id property to the student's id 
         $this->student_id = $student->id;
 
         // Update or create student details
