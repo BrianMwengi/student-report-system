@@ -1,6 +1,9 @@
 <?php
 
 use Livewire\Volt\Component;
+use App\Models\Student;
+use App\Models\StudentDetail;
+use Livewire\Attributes\Validate;
 
 new class extends Component {
     #[Validate('required|string|max:255')]
