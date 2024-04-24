@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Stream;
 use App\Models\ClassForm;
+use App\Models\StudentDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -36,6 +37,12 @@ class Student extends Model
     public function exams(): HasMany
     {
         return $this->hasMany(Exam::class);
+    }
+
+    // This function returns the student details that belong to a student.
+    public function studentdetails(): HasOne
+    {
+        return $this->hasOne(StudentDetail::class);
     }
 }
 
