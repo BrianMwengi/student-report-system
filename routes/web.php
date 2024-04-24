@@ -6,6 +6,7 @@ use App\Http\Controllers\StreamController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ClassFormController;
+use App\Http\Controllers\StudentDetailController;
 
 Route::view('/', 'welcome');
 
@@ -29,6 +30,9 @@ Route::get('exams', [ExamController::class, 'index'])
         ->middleware(['auth', 'verified'])
         ->name('exams'); 
 
+Route::get('studentdetails', [StudentDetailController::class, 'index'])
+        ->middleware(['auth', 'verified'])
+        ->name('studentdetails'); 
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
