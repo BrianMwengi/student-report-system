@@ -15,7 +15,6 @@ new class extends Component {
 
     #[Validate('required|exists:class_forms,id')]
     public $class;
-
     public $class_forms;
     public $streams;
     public $student;

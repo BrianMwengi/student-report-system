@@ -16,10 +16,22 @@ new class extends Component {
     public $kcpe_position;
     public $student_id;
     public $students;
+    public $adm_no;
 
     public function mount()
     {
         $this->students = Student::all();
+    }
+
+    public function getStudent()
+    {
+        return Student::find($this->student_id);
+    }
+
+    public function updateAdmissionNumber()
+    {
+        $student = $this->getStudent(); 
+        $this->adm_no = $student ? $student->adm_no : '';
     }
 
     public function submit()
@@ -27,8 +39,8 @@ new class extends Component {
         // Validation rules
         $this->validate();
 
-        // Find the student with the selected student ID
-         $student = Student::find($this->student_id);
+         // Find the student with the selected student ID
+        $student = $this->getStudent();
 
         // Set the student_id property to the student's id 
         $this->student_id = $student->id;
@@ -46,6 +58,13 @@ new class extends Component {
 
          // Show a success message or redirect to another page
          $this->dispatch('success', message: "Student detail added successfully!");
+        // Reset input fields
+        $this->student_id = '';
+        $this->adm_no = '';
+        $this->primary_school = '';
+        $this->kcpe_year = '';
+        $this->kcpe_marks = '';
+        $this->kcpe_position = '';
     }
 }; ?>
 
@@ -54,7 +73,7 @@ new class extends Component {
         <h2 class="mb-4">Add Student Primary School Details</h2>
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <select class="form-select" wire:model="student_id" required>
+                <select class="form-select" wire:model="student_id" wire:change="updateAdmissionNumber" required>
                     <option value="">Select Student</option>
                     @foreach ($students as $student)
                         <option value="{{ $student->id }}">{{ $student->name }}</option>
@@ -62,11 +81,12 @@ new class extends Component {
                 </select>
                 @error('student') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
-
+        
             <div class="mb-3">
-                <input type="text" wire:model="adm_no" class="form-input" placeholder="Admission Number">
+                <input type="text" wire:model="adm_no" class="form-input" placeholder="Admission Number" readonly>
                 @error('adm_no') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
+        
             <div class="mb-3">
                 <input type="text" wire:model="primary_school" class="form-input" placeholder="Primary School" value="{{ $primary_school }}">
                 @error('primary_school') <div class="text-red-500">{{ $message }}</div> @enderror
