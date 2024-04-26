@@ -28,14 +28,14 @@ new class extends Component {
     public function mount()
     {
         $this->classes = ClassForm::all();
-        $this->classforms = Student::select('classform')->distinct()->get();
+        $this->classforms = Student::select('form')->distinct()->get();
         $this->students = collect(); // Start with an empty collection
     }
 
     public function updatedSelectedClass()
     {
         // Get all the students in the selected classform.
-        $this->students = Student::where('classform', $this->selectedClass)->get();
+        $this->students = Student::where('form', $this->selectedClass)->get();
         
         // Reset the selected student when changing classform.
         $this->selectedStudent = null; 
