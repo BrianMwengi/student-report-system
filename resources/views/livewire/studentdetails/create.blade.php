@@ -18,16 +18,19 @@ new class extends Component {
     public $students;
     public $adm_no;
 
+    // Mount the students
     public function mount()
     {
         $this->students = Student::all();
     }
 
+    // Get the student details
     public function getStudent()
     {
         return Student::find($this->student_id);
     }
 
+    // Update the admission number
     public function updateAdmissionNumber()
     {
         $student = $this->getStudent(); 
