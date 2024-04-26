@@ -7,10 +7,6 @@ use Livewire\Attributes\Validate;
 
 new class extends Component {
     #[Validate('required|string|max:255')]
-    public $name;
-    #[Validate('required|integer')]
-    public $adm_no;
-    #[Validate('required|string|max:255')]
     public $primary_school;
     #[Validate('required|integer')]
     public $kcpe_year;
@@ -19,17 +15,20 @@ new class extends Component {
     #[Validate('required|integer')]
     public $kcpe_position;
     public $student_id;
+    public $students;
+
+    public function mount()
+    {
+        $this->students = Student::all();
+    }
 
     public function submit()
     {
         // Validation rules
         $this->validate();
 
-        // Find the student or create a new one
-        $student = Student::firstOrCreate(
-            ['adm_no' => $this->adm_no],
-            ['name' => $this->name]
-        );
+        // Find the student with the selected student ID
+         $student = Student::find($this->student_id);
 
         // Set the student_id property to the student's id 
         $this->student_id = $student->id;
@@ -52,12 +51,18 @@ new class extends Component {
 
 <div>
     <div class="container mt-5">
-        <h2 class="mb-4">Add/Edit Student Primary School-Details</h2>
+        <h2 class="mb-4">Add Student Primary School Details</h2>
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <input type="text" wire:model="name" class="form-input" placeholder="Student Name">
-                @error('name') <div class="text-red-500">{{ $message }}</div> @enderror
+                <select class="form-select" wire:model="student_id" required>
+                    <option value="">Select Student</option>
+                    @foreach ($students as $student)
+                        <option value="{{ $student->id }}">{{ $student->name }}</option>
+                    @endforeach
+                </select>
+                @error('student') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
+
             <div class="mb-3">
                 <input type="text" wire:model="adm_no" class="form-input" placeholder="Admission Number">
                 @error('adm_no') <div class="text-red-500">{{ $message }}</div> @enderror
