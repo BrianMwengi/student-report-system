@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('student_activities', function (Blueprint $table) {
             $table->id();
+            $table->text('responsibilities')->nullable();
+            $table->text('clubs')->nullable();
+            $table->text('sports')->nullable();
+            $table->text('house_comment')->nullable();
+            $table->text('teacher_comment')->nullable();
+            $table->text('principal_comment')->nullable();
             $table->timestamps();
+
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 
