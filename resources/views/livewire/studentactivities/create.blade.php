@@ -3,11 +3,12 @@
 use Livewire\Volt\Component;
 use App\Models\ClassForm;
 use App\Models\Student;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 
 new class extends Component {
     public $students;
-    public $classes;
+    public $classforms;
     public $forms;
     public $selectedStudent = null;
     public $selectedClass = null;
@@ -25,22 +26,25 @@ new class extends Component {
     public $principal_comment;
     public $activityId;
 
+    protected $listeners = ['updatedSelectedClass' => '$refresh'];
     public function mount()
     {
-        $this->classes = ClassForm::all();
+        $this->classforms = ClassForm::all();
         $this->forms = Student::select('form')->distinct()->get();
         $this->students = collect(); // Start with an empty collection
     }
-
+   
+     #[On('commentsUpdated')]
     public function updatedSelectedClass()
     {
-        // Get all the students in the selected classform.
-        $this->students = Student::where('form', $this->selectedClass)->get();
+       // Get all the students in the selected form.
+       $this->students = Student::where('form', $this->selectedClass)->get();
+       $this->dispatch('contentChanged');
         
-        // Reset the selected student when changing classform.
+        // Reset the selected student when changing form.
         $this->selectedStudent = null; 
-   }
-
+    }
+    
     public function saveComments()
     {
         // Validate the input data
@@ -69,6 +73,10 @@ new class extends Component {
     
         // Save the activity
         $activity->save();
+
+        // Emit an event so that other components can react if needed
+        $this->emit('commentsUpdated');
+    
     
         // Reset the form fields
         $this->responsibilities = '';
@@ -102,28 +110,30 @@ new class extends Component {
             $this->teacher_comment = '';
             $this->principal_comment = '';
         }
+    }
+    
+    public function with(): array
+    {
+        $this->forms = Student::select('form')->distinct()->get();
+        if ($this->selectedClass) {
+            $this->students = Student::where('form', $this->selectedClass)->get();
+        }
 
-        // public function with(): array
-        // {
-        //     $this->classforms = Student::select('form')->distinct()->get(),
-        //     if ($this->selectedClass) {
-        //         $this->students = Student::where('form', $this->selectedClass)->get();
-        //     }
-
-        //     return [ 
-        //         'class_forms' => $class_forms,
-        //     ];
-        // }
+        // Return the data as an array
+        return [ 
+            'forms' => $this->forms,
+            'students' => $this->students,
+        ];
     }
 }; ?>
 
-<div>
+<div wire:poll.500ms>
     <div class="container">
         <div class="grid grid-cols-1 gap-3">
             <!-- Select dropdown for choosing a class -->
             <div>
                 <label for="selectedClass" class="block text-sm font-medium text-gray-700">Select a Form:</label>
-                <select id="selectedClass" wire:model="selectedClass" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <select id="selectedClass"  wire:model="selectedClass" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     <option value="">Select a ClassForm</option>
                     @foreach($forms as $form)
                         <option value="{{ $form->form }}">{{ 'Form ' . $form->form }}</option>
