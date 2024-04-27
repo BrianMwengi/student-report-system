@@ -26,7 +26,7 @@ new class extends Component {
     public $principal_comment;
     public $activityId;
 
-    protected $listeners = ['updatedSelectedClass' => '$refresh'];
+    // protected $listeners = ['updatedSelectedClass' => '$refresh'];
     public function mount()
     {
         $this->classforms = ClassForm::all();
@@ -34,7 +34,6 @@ new class extends Component {
         $this->students = collect(); // Start with an empty collection
     }
    
-     #[On('commentsUpdated')]
     public function updatedSelectedClass()
     {
        // Get all the students in the selected form.
@@ -75,7 +74,7 @@ new class extends Component {
         $activity->save();
 
         // Emit an event so that other components can react if needed
-        $this->emit('commentsUpdated');
+        // $this->emit('commentsUpdated');
     
     
         // Reset the form fields

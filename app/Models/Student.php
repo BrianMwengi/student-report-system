@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Stream;
-use App\Models\ClassForm;
-use App\Models\StudentDetail;
-use App\Models\StudentActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
