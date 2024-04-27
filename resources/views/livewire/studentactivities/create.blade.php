@@ -8,7 +8,7 @@ use Livewire\Attributes\Validate;
 new class extends Component {
     public $students;
     public $classes;
-    public $classforms;
+    public $forms;
     public $selectedStudent = null;
     public $selectedClass = null;
     #[Validate('required')]
@@ -28,7 +28,7 @@ new class extends Component {
     public function mount()
     {
         $this->classes = ClassForm::all();
-        $this->classforms = Student::select('form')->distinct()->get();
+        $this->forms = Student::select('form')->distinct()->get();
         $this->students = collect(); // Start with an empty collection
     }
 
@@ -105,10 +105,9 @@ new class extends Component {
 
         // public function with(): array
         // {
-        //     // $class_forms = ClassForm::all();
-        //     $this->classforms = Student::select('classform')->distinct()->get(),
+        //     $this->classforms = Student::select('form')->distinct()->get(),
         //     if ($this->selectedClass) {
-        //         $this->students = Student::where('classform', $this->selectedClass)->get();
+        //         $this->students = Student::where('form', $this->selectedClass)->get();
         //     }
 
         //     return [ 
@@ -126,8 +125,8 @@ new class extends Component {
                 <label for="selectedClass" class="block text-sm font-medium text-gray-700">Select a Form:</label>
                 <select id="selectedClass" wire:model="selectedClass" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     <option value="">Select a ClassForm</option>
-                    @foreach($classforms as $classform)
-                        <option value="{{ $classform->classform }}">{{ 'ClassForm ' . $classform->classform }}</option>
+                    @foreach($forms as $form)
+                        <option value="{{ $form->form }}">{{ 'Form ' . $form->form }}</option>
                     @endforeach
                 </select>
             </div>
