@@ -12,25 +12,27 @@ new class extends Component {
     public $forms;
     public $selectedStudent = null;
     public $selectedClass = null;
-    #[Validate('required')]
-    public $responsibilities;
-    #[Validate('required')]
-    public $clubs;
-    #[Validate('required')]
-    public $sports;
-    #[Validate('required')]
-    public $house_comment;
-    #[Validate('required')]
-    public $teacher_comment;
-    #[Validate('required')]
-    public $principal_comment;
+    #[Validate('required|string|max:255')]
+    public $responsibilities = '';
+    #[Validate('required|string|max:255')]
+    public $clubs = '';
+    #[Validate('required|string|max:255')]
+    public $sports = '';
+    #[Validate('required|string|max:255')]
+    public $house_comment = '';
+    public $teacher_comment = '';
+    public $principal_comment = '';
     public $activityId;
 
+    // Load the initial data
     public function mount()
     {
+        // Get all the class forms
         $this->classforms = ClassForm::all();
+        // Get all the forms available
         $this->forms = Student::select('form')->distinct()->get();
-        $this->students = collect(); // Start with an empty collection
+        // Start with an empty collection of students
+        $this->students = collect(); 
     }
    
     public function updatedSelectedClass()
@@ -104,9 +106,12 @@ new class extends Component {
         }
     }
     
+    // Return the view to render
     public function with(): array
     {
+        // Get all the forms
         $this->forms = Student::select('form')->distinct()->get();
+        // Get all the students in the selected form.
         if ($this->selectedClass) {
             $this->students = Student::where('form', $this->selectedClass)->get();
         }
@@ -140,7 +145,7 @@ new class extends Component {
                     <select id="selectedStudent" wire:model="selectedStudent" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option value="">Select a Student</option>
                         @foreach($students as $student)
-                            <option value="{{ $student->id }}">{{ $student->name }}</option>
+                            <option value="{{ $student->id }}">{{ $student->name }} (Adm No: {{ $student->adm_no }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -153,20 +158,24 @@ new class extends Component {
                     <div class="mb-3">
                         <label for="responsibilities" class="block text-sm font-medium text-gray-700">Responsibilities:</label>
                         <textarea id="responsibilities" wire:model="responsibilities" placeholder="Responsibilities" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        @error('responsibilities') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
                     <div class="mb-3">
                         <label for="clubs" class="block text-sm font-medium text-gray-700">Clubs:</label>
                         <textarea id="clubs" wire:model="clubs" placeholder="Clubs" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        @error('clubs') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="sports" class="block text-sm font-medium text-gray-700">Sports:</label>
                         <textarea id="sports" wire:model="sports" placeholder="Sports" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
+                        @error('sports') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
                     
                     <div class="mb-3">
                         <label for="house_comment" class="block text-sm font-medium text-gray-700">House Comment:</label>
                         <textarea id="house_comment" wire:model="house_comment" placeholder="House comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
+                        @error('house_comment') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
                     
                     <div class="mb-3">
@@ -174,8 +183,9 @@ new class extends Component {
                         @if ($teacher_comment)
                             <textarea id="teacher_comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>Comment already provided</textarea>
                         @else
-                            <textarea id="teacher_comment" wire:model.lazy="teacher_comment" placeholder="Teacher's comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
+                            <textarea id="teacher_comment" wire:model.debounce.4000ms="teacher_comment" placeholder="Teacher's comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
                         @endif
+                        @error('teacher_comment') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
                     
                     <div class="mb-3">
@@ -183,8 +193,9 @@ new class extends Component {
                         @if ($principal_comment)
                             <textarea id="principal_comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>Comment already provided</textarea>
                         @else
-                            <textarea id="principal_comment" wire:model.lazy="principal_comment" placeholder="Principal's comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
+                            <textarea id="principal_comment" wire:model.debounce.4000ms="principal_comment" placeholder="Principal's comment" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300"></textarea>
                         @endif
+                        @error('principal_comment') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
                     </div>
                     <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-blue-300">Submit</button>
                 </form>
