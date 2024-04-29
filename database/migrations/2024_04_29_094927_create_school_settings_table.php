@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('school_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('school_name');
+            $table->integer('current_year');
+            $table->date('term_start_date');
+            $table->date('term_end_date');
+            $table->string('term')->nullable();
+            $table->string('school_motto')->nullable();
+            $table->string('school_vision')->nullable();
+            $table->string('logo_url')->nullable();
+            $table->date('next_term_start_date')->nullable();
+            $table->date('next_term_end_date')->nullable();
             $table->timestamps();
         });
     }
