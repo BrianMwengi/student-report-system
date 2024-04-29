@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Student extends Model
@@ -42,7 +45,7 @@ class Student extends Model
         return $this->hasOne(StudentDetail::class);
     }
 
-    // This function returns the student activity that belongs to a student.
+    // This function returns the student activity that belongs to a student.    
     public function activity(): HasOne
     {
         return $this->hasOne(StudentActivity::class);

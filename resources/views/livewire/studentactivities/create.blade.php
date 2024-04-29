@@ -38,7 +38,7 @@ new class extends Component {
     {
        // Get all the students in the selected form.
        $this->students = Student::where('form', $this->selectedClass)->get();
-       $this->dispatch('contentChanged');
+    //    $this->dispatch('contentChanged');
         
         // Reset the selected student when changing form.
         $this->selectedStudent = null; 
