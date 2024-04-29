@@ -26,7 +26,6 @@ new class extends Component {
     public $principal_comment;
     public $activityId;
 
-    // protected $listeners = ['updatedSelectedClass' => '$refresh'];
     public function mount()
     {
         $this->classforms = ClassForm::all();
