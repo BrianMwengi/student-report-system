@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
+use App\Models\SchoolSetting;
 
 new class extends Component {
     use WithFileUploads;
