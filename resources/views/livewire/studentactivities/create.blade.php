@@ -69,10 +69,6 @@ new class extends Component {
     
         // Save the activity
         $activity->save();
-
-        // Emit an event so that other components can react if needed
-        // $this->emit('commentsUpdated');
-    
     
         // Reset the form fields
         $this->responsibilities = '';
