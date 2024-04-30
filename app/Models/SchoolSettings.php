@@ -11,7 +11,7 @@ class SchoolSettings extends Model
 
     protected $fillable = [
         'id',
-        'school_name', 
+        'school_name',
         'current_year',
         'term_start_date', 
         'next_term_start_date', 

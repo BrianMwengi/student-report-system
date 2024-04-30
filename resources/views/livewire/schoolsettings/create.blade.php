@@ -3,7 +3,7 @@
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
-use App\Models\SchoolSetting;
+use App\Models\SchoolSettings;
 
 new class extends Component {
     use WithFileUploads;
@@ -33,7 +33,7 @@ new class extends Component {
 
     public function mount()
     {
-        $this->settings = SchoolSetting::first() ?? new SchoolSetting;
+        $this->settings = SchoolSettings::first() ?? new SchoolSettings;
     }
 
     public function updatedSettingsLogoUrl()
@@ -50,8 +50,9 @@ new class extends Component {
 
    public function saveSettings()
    {
+        // Validate the input data
         $this->validate();
-    
+
         if ($this->logo) {
             $logoPath = $this->logo->store('logos', 'public');
             $this->settings->logo_url = $logoPath;
@@ -62,7 +63,18 @@ new class extends Component {
                 $this->settings->logo_url = $existingSettings->logo_url;
             }
         }
-    
+
+        // Set other required fields
+        $this->settings->school_name = $this->school_name;
+        $this->settings->current_year = $this->current_year;
+        $this->settings->term = $this->term;
+        $this->settings->term_start_date = $this->term_start_date;
+        $this->settings->term_end_date = $this->term_end_date;
+        $this->settings->next_term_start_date = $this->next_term_start_date;
+        $this->settings->next_term_end_date = $this->next_term_end_date;
+        $this->settings->school_motto = $this->school_motto;
+        $this->settings->school_vision = $this->school_vision;
+
         // Save or update the settings
         if ($this->settings) {
             $this->settings->save();
@@ -81,72 +93,75 @@ new class extends Component {
 
 <div>
     <div>
-        <form wire:submit.prevent="saveSettings" class="needs-validation" novalidate>
+        <form wire:submit="saveSettings" class="needs-validation" novalidate>
             {{-- Display flash message --}}
     
-            <div class="mb-3">
-                <label for="logo_url" class="form-label">School Logo</label>
-                <input wire:model="logo" type="file" id="logo_url" class="form-control">
-                @error('logo') <div class="alert alert-danger">{{ $message }}</div> @enderror
+            <div class="mb-4">
+                <label for="logo_url" class="block text-sm font-medium text-gray-700">School Logo</label>
+                <input wire:model="logo" type="file" id="logo_url" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('logo') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
     
-            <div class="mb-3">
-                <label for="school_name" class="form-label">School Name</label>
-                <input wire:model="settings.school_name" type="text" id="school_name" class="form-control">
-                @error('school_name') <div class="alert alert-danger">{{ $message }}</div> @enderror
+            <div class="mb-4">
+                <label for="school_name" class="block text-sm font-medium text-gray-700">School Name</label>
+                <input wire:model="school_name" type="text" id="school_name" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('school_name') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
     
-            <div class="mb-3">
-                <label for="current_year" class="form-label">Current Year</label>
-                <input wire:model="settings.current_year" type="number" id="current_year" class="form-control">
-                @error('current_year') <div class="alert alert-danger">{{ $message }}</div> @enderror
+            <div class="mb-4">
+                <label for="current_year" class="block text-sm font-medium text-gray-700">Current Year</label>
+                <input wire:model="current_year" type="number" id="current_year" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('current_year') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
     
-            <div class="mb-3">
-                <label for="term" class="form-label">Term</label>
-                <input wire:model="settings.term" type="text" id="term" class="form-control">
-                @error('term') <div class="alert alert-danger">{{ $message }}</div> @enderror
+            <div class="mb-4">
+                <label for="term" class="block text-sm font-medium text-gray-700">Term</label>
+                <input wire:model="term" type="text" id="term" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('term') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            <div class="mb-3">
-                <label for="term_start_date" class="form-label">Term Start Date</label>
-                <input wire:model="settings.term_start_date" type="date" id="term_start_date" class="form-control">
-                @error('term_start_date') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="term_start_date" class="block text-sm font-medium text-gray-700">Term Start Date</label>
+                <input wire:model="term_start_date" type="date" id="term_start_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('term_start_date') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            
-            <div class="mb-3">
-                <label for="term_end_date" class="form-label">Term End Date</label>
-                <input wire:model="settings.term_end_date" type="date" id="term_end_date" class="form-control">
-                @error('term_end_date') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="term_end_date" class="block text-sm font-medium text-gray-700">Term End Date</label>
+                <input wire:model="term_end_date" type="date" id="term_end_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('term_end_date') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            
-            <div class="mb-3">
-                <label for="next_term_start_date" class="form-label">Next Term Start Date</label>
-                <input wire:model="settings.next_term_start_date" type="date" id="next_term_start_date" class="form-control">
-                @error('next_term_start_date') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="next_term_start_date" class="block text-sm font-medium text-gray-700">Next Term Start Date</label>
+                <input wire:model="next_term_start_date" type="date" id="next_term_start_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('next_term_start_date') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            
-            <div class="mb-3">
-                <label for="next_term_end_date" class="form-label">Next Term End Date</label>
-                <input wire:model="settings.next_term_end_date" type="date" id="next_term_end_date" class="form-control">
-                @error('next_term_end_date') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="next_term_end_date" class="block text-sm font-medium text-gray-700">Next Term End Date</label>
+                <input wire:model="next_term_end_date" type="date" id="next_term_end_date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('next_term_end_date') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            
-            <div class="mb-3">
-                <label for="school_motto" class="form-label">School Motto</label>
-                <input wire:model="settings.school_motto" type="text" id="school_motto" class="form-control">
-                @error('school_motto') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="school_motto" class="block text-sm font-medium text-gray-700">School Motto</label>
+                <input wire:model="school_motto" type="text" id="school_motto" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('school_motto') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            <div class="mb-3">
-                <label for="school_vision" class="form-label">School Vision</label>
-                <input wire:model="settings.school_vision" type="text" id="school_vision" class="form-control">
-                @error('school_vision') <div class="alert alert-danger">{{ $message }}</div> @enderror
+    
+            <div class="mb-4">
+                <label for="school_vision" class="block text-sm font-medium text-gray-700">School Vision</label>
+                <input wire:model="school_vision" type="text" id="school_vision" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                @error('school_vision') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
-            
-            <div class="mb-3">
+    
+            <div class="mb-4">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Save Settings
                 </button>
             </div>
         </form>
+    </div>    
     </div>    
 </div>
