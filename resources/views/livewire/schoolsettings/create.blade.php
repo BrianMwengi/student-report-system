@@ -58,7 +58,7 @@ new class extends Component {
             $this->settings->logo_url = $logoPath;
         } else {
             // If there is no new logo (i.e., it's null), then use the existing logo URL instead
-            $existingSettings = SchoolSetting::first();
+            $existingSettings = SchoolSettings::first();
             if ($existingSettings) {
                 $this->settings->logo_url = $existingSettings->logo_url;
             }
@@ -80,7 +80,7 @@ new class extends Component {
             $this->settings->save();
         }
     
-        session()->flash('message', 'Settings Updated Successfully.');
+        $this->dispatch('success', message: "Exam details added successfully!");
     }
 
     public function with(): array
@@ -95,6 +95,13 @@ new class extends Component {
     <div>
         <form wire:submit="saveSettings" class="needs-validation" novalidate>
             {{-- Display flash message --}}
+            <div x-data="{ open: false, message: '' }" 
+                x-cloak
+                @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+                x-show="open"
+                class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+                <span x-text="message"></span>
+            </div>
     
             <div class="mb-4">
                 <label for="logo_url" class="block text-sm font-medium text-gray-700">School Logo</label>
