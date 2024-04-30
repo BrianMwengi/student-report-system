@@ -30,22 +30,16 @@ new class extends Component {
     public $school_vision;
     public $settings;
 
-
+    // Initialize the component
     public function mount()
-    {
+    { 
+        // Get the school settings or create a new one if it doesn't exist   
         $this->settings = SchoolSettings::first() ?? new SchoolSettings;
-    }
-
-    public function updatedSettingsLogoUrl()
-    {
-        if ($this->settings) {
-            $this->validate([
-                'settings.logo_url' => 'image', // Validate here immediately upon upload
-            ]);
-    
-            // Store the image and keep its path in the component
-            $this->settings->logo_url = $this->settings->logo_url->store('logos', 'public');
-        }
+        // if (SchoolSettings::first()) {
+        //     $this->settings = SchoolSettings::first();
+        // } else {
+        //     $this->settings = new SchoolSettings;
+        // }
     }
 
    public function saveSettings()
@@ -83,8 +77,10 @@ new class extends Component {
         $this->dispatch('success', message: "Settings Updated Successfully!");
     }
 
+    // Return the view 
     public function with(): array
     {
+        // Pass the settings to the view
         return [
             'settings' => $this->settings,
         ];
@@ -96,7 +92,7 @@ new class extends Component {
         <form wire:submit="saveSettings" class="needs-validation" novalidate>
             {{-- Display flash message --}}
             <div x-data="{ open: false, message: '' }" 
-                x-cloak
+                 x-cloak
                 @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
                 x-show="open"
                 class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
