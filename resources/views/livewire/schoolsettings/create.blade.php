@@ -80,7 +80,7 @@ new class extends Component {
             $this->settings->save();
         }
     
-        $this->dispatch('success', message: "Exam details added successfully!");
+        $this->dispatch('success', message: "Settings Updated Successfully!");
     }
 
     public function with(): array
