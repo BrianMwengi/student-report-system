@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Component;
 use App\Models\Student;
+use Livewire\Attributes\On; 
 use Livewire\WithPagination;
 
 new class extends Component {
@@ -30,7 +31,8 @@ new class extends Component {
         $this->setPage($page);
     }
 
-    private function getStudents()
+    #[On('student-created')]
+    public function getStudents()
     {
         return Student::where('form', $this->form)
             ->where('name', 'like', '%' . $this->searchTerm . '%')

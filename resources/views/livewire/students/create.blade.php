@@ -56,10 +56,14 @@ new class extends Component {
                 'form' => $formValue,
                 'form_sequence_number' => $formSequenceNumber,  
             ]);
+            
+        // Dispatch an event to notify student.list component that a student has been created
+        $this->dispatch('student-created'); 
 
         // Show a success message or redirect to another page
         $this->dispatch('success', message: "Student added successfully!");
 
+        // Reset the input fields
         $this->student_name = '';
         $this->adm_no = '';
         $this->class = '';
