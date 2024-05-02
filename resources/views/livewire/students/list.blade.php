@@ -7,50 +7,61 @@ use Livewire\WithPagination;
 
 new class extends Component {
     use WithPagination;
-
+    
+    // These are the public properties that will be accessible in the blade file
     public $form = 1;
     public $searchTerm = '';
     public $sortColumn = 'name';
     public $sortDirection = 'asc';
 
+    // updateForm is called when the form select is changed
     public function updatedForm($value)
-    {
+    {   
+       // Save the selected form to the session
         session()->put('students_list_form', $value);
+        // Reset the page to 1
         $this->resetPage();
+        // Get the students for the selected form
         $this->students = $this->getStudents();
     }
 
+    // Sort the students by the selected column
     public function sortBy($column)
     {
+        // If the column is already sorted, reverse the sort direction
         $this->sortColumn = $column;
+        // Reverse the sort direction
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-    }
-
-    public function gotoPage($page)
-    {
-        $this->setPage($page);
     }
 
     #[On('student-created')]
     public function getStudents()
     {
+        // Get the students for the selected form
         return Student::where('form', $this->form)
+        // Search for students with the search term
             ->where('name', 'like', '%' . $this->searchTerm . '%')
+            // Eager load the stream relationship
             ->with('stream')
+            // Order the students by the form sequence number
             ->orderByRaw('CAST(form_sequence_number AS INT) ' . $this->sortDirection)
             ->paginate(10);
     }
 
+    // State method to persist the form selection
     public function state(): array
     {
         return [
+            // Get the form from the session
             'form' => session()->get('students_list_form', 1),
         ];
     }
 
+    // Return the students and the form
     public function with(): array
     {
         return [
+            // Get the students for the selected form
             'students' => $this->getStudents(),
         ];
     }
@@ -107,15 +118,15 @@ new class extends Component {
         </table>
     </div>
 
-        <div class="mt-4">
-            @if($students->total())
-                @if($students->count())
-                    {{ $students->links() }}
-                @else
-                    <p class="text-yellow-600">No student found with that name.</p>
-                @endif
+    <div class="mt-4">
+        @if($students->count())
+            {{ $students->links() }}
+        @else
+            @if($searchTerm)
+                <p class="text-yellow-600">No student found with that name.</p>
             @else
                 <p class="text-yellow-600">No students added yet.</p>
             @endif
-        </div>
+        @endif
     </div>
+</div>
