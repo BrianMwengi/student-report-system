@@ -9,16 +9,16 @@ use Livewire\Attributes\Validate;
 new class extends Component {
     #[Validate('required|string|max:255')]
     public $student_name;
-
     #[Validate('required|unique:students,adm_no')]
     public $adm_no;
-
     #[Validate('required|exists:class_forms,id')]
     public $class;
+    #[Validate('required|exists:streams,id')]
+    public $stream_id;
     public $class_forms;
     public $streams;
     public $student;
-    public $stream_id;
+ 
     public $term;
    
     public function mount()
@@ -39,9 +39,6 @@ new class extends Component {
             // Set the form value based on the selected class or use a default value (e.g., 1)
             $formValue = $selectedClass ? intval(substr($selectedClass->name, -1)) : 1;
 
-            // Check if stream_id is empty
-            $streamIdValue = $this->stream_id !== '' ? $this->stream_id : null;
-
             // Find the highest current sequence number for the given form
             $maxSequenceNumber = Student::where('form', $formValue)->max('form_sequence_number');
 
@@ -52,7 +49,7 @@ new class extends Component {
             $this->student = Student::create([ 
                 'name' => $this->student_name,
                 'adm_no' => $this->adm_no,
-                'stream_id' => $streamIdValue,
+                'stream_id' => $this->stream_id,
                 'form' => $formValue,
                 'form_sequence_number' => $formSequenceNumber,  
             ]);
@@ -98,15 +95,15 @@ new class extends Component {
             </div>
     
             @if($streams->isNotEmpty())
-                <div class="mb-3">
-                    <select class="form-select" wire:model="stream_id" required>
-                        <option value="">Select Stream</option>
-                        @foreach ($streams as $stream)
-                            <option value="{{ $stream->id }}">{{ $stream->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('stream_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
-                </div>
+            <div class="mb-3">
+                <select class="form-select" wire:model="stream_id" required>
+                    <option value="">Select Stream</option>
+                    @foreach ($streams as $stream)
+                        <option value="{{ $stream->id }}">{{ $stream->name }}</option>
+                    @endforeach
+                </select>
+                @error('stream_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+            </div>
             @endif
     
             <div class="mb-3">
