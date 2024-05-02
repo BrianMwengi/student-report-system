@@ -12,14 +12,17 @@ new class extends Component {
     public $sortColumn = 'name';
     public $sortDirection = 'asc';
 
-    public function updated($propertyName)
+    public function updatedForm($value)
     {
-        $this->validateOnly($propertyName);
+        session()->put('students_list_form', $value);
+        $this->resetPage();
+        $this->students = $this->getStudents();
+    }
 
-        if ($propertyName === 'form' || $propertyName === 'searchTerm') {
-            $this->resetPage();
-            $this->students = $this->getStudents();
-        }
+    public function sortBy($column)
+    {
+        $this->sortColumn = $column;
+        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
     private function getStudents()
@@ -31,10 +34,11 @@ new class extends Component {
             ->paginate(10);
     }
 
-    public function sortBy($column)
+    public function state(): array
     {
-        $this->sortColumn = $column;
-        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        return [
+            'form' => session()->get('students_list_form', 1),
+        ];
     }
 
     public function with(): array
@@ -103,8 +107,3 @@ new class extends Component {
         </div>
     </div>
 </div>
-    <script>
-        window.addEventListener('beforeunload', function (e) {
-            @this.call('saveState');
-        });
-    </script>
