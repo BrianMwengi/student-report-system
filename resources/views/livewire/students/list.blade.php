@@ -25,6 +25,11 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
+    public function gotoPage($page)
+    {
+        $this->setPage($page);
+    }
+
     private function getStudents()
     {
         return Student::where('form', $this->form)
@@ -65,11 +70,11 @@ new class extends Component {
             </div>
         </div>
 
-        {{-- @if (session()->has('message'))
+        @if (session()->has('message'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline">{{ session('message') }}</span>
             </div>
-        @endif --}}
+        @endif
 
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
@@ -99,10 +104,14 @@ new class extends Component {
         </table>
 
         <div class="mt-4">
-            @if($students->count())
-                {{ $students->links('vendor.pagination.tailwind') }}
+            @if($students->total())
+                @if($students->count())
+                    {{ $students->links() }}
+                @else
+                    <p class="text-yellow-600">No student found with that name.</p>
+                @endif
             @else
-                <p class="text-yellow-600">No student found with that name.</p>
+                <p class="text-yellow-600">No students added yet.</p>
             @endif
         </div>
     </div>
