@@ -56,7 +56,7 @@ new class extends Component {
                 'form' => $formValue,
                 'form_sequence_number' => $formSequenceNumber,  
             ]);
-            
+
         // Dispatch an event to notify student.list component that a student has been created
         $this->dispatch('student-created'); 
 
@@ -73,7 +73,7 @@ new class extends Component {
     }; ?>
 
 <div>
-    <div class="container mt-5">
+    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <h2 class="mb-4 text-2xl font-bold">Add Student Details</h2>
     
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>

@@ -56,7 +56,7 @@ new class extends Component {
     }
 }; ?>
 <div wire:poll.500ms>
-    <div class="container">
+    <div class="container p-6 bg-white shadow-md rounded-lg">
         <div class="flex justify-between items-center mb-3">
             <div class="col-auto">
                 <label for="form" class="block text-sm font-medium text-gray-700">Select Form:</label>
@@ -78,6 +78,7 @@ new class extends Component {
             </div>
         @endif
 
+    <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
@@ -104,6 +105,7 @@ new class extends Component {
                 @endforeach
             </tbody>
         </table>
+    </div>
 
         <div class="mt-4">
             @if($students->total())
@@ -117,4 +119,3 @@ new class extends Component {
             @endif
         </div>
     </div>
-</div>
