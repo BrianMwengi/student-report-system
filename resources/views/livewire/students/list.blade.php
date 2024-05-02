@@ -83,12 +83,6 @@ new class extends Component {
             </div>
         </div>
 
-        @if (session()->has('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        @endif
-
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
