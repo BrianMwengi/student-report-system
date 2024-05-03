@@ -34,14 +34,17 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    public function deleteStudent($studentId)
-    {
-        $student = Student::find($studentId);
+    protected $listeners = ['studentDeleted'];
 
-        if ($student) {
-            $student->delete();
-            $this->dispatch('success', message: "Student deleted successfully!");
-        }
+    public function studentDeleted($message)
+    {
+        session()->flash('message', $message);
+        $this->render();
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->dispatchBrowserEvent('show-delete-confirmation', ['id' => $id]);
     }
 
     #[On('student-created')]
@@ -143,3 +146,4 @@ new class extends Component {
         @endif
     </div>
 </div>
+
