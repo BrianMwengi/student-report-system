@@ -24,7 +24,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="max-w-lg mx-auto">
+    <div class=" container mt-5 p-6 bg-white shadow-md rounded-lg max-w-lg mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="col-span-1 md:col-span-4">
                 <h2 class="text-xl font-bold">Add Subject</h2>
@@ -41,7 +41,7 @@ new class extends Component {
                     </div>
     
                     <div class="form-group mt-4">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
                     </div>
                 </form>
                 <div x-data="{ open: false, message: '' }" 

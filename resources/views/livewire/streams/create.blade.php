@@ -39,7 +39,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div>
+    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <h2 class="text-xl font-bold">Add Stream</h2>
     
         <form wire:submit ="submit" class="mt-4">

@@ -125,7 +125,7 @@ new class extends Component {
 }; ?>
 
 <div wire:poll.500ms>
-    <div class="container">
+    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <div class="grid grid-cols-1 gap-3">
             <!-- Select dropdown for choosing a class -->
             <div>

@@ -88,7 +88,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div>
+    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <form wire:submit="saveSettings" class="needs-validation" novalidate>
             {{-- Display flash message --}}
             <div x-data="{ open: false, message: '' }" 
