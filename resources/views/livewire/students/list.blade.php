@@ -34,17 +34,17 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    protected $listeners = ['studentDeleted'];
-
+    // Listen for the student-created event
+    #[On('studentDeleted')]
     public function studentDeleted($message)
     {
         session()->flash('message', $message);
         $this->render();
     }
-
+    
     public function confirmDelete($id)
     {
-        $this->dispatchBrowserEvent('show-delete-confirmation', ['id' => $id]);
+        $this->dispatch('show-delete-confirmation', ['id' => $id]);
     }
 
     #[On('student-created')]
@@ -97,13 +97,13 @@ new class extends Component {
         </div>
 
         {{-- Flash message --}}
-        <div x-data="{ open: false, message: '' }" 
+        {{-- <div x-data="{ open: false, message: '' }" 
              x-cloak
             @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
             x-show="open"
             class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
             <span x-text="message"></span>
-        </div>
+        </div> --}}
 
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
@@ -125,7 +125,7 @@ new class extends Component {
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            <button wire:click="deleteStudent({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                            <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                             <a href="" class="text-blue-600 hover:text-blue-900 ml-2">View Report Card</a>
                         </td>
                     </tr>
@@ -147,3 +147,23 @@ new class extends Component {
     </div>
 </div>
 
+@script
+<script>
+    window.addEventListener('show-delete-confirmation', function(event) {
+        let id = event.detail.id;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.livewire.emit('deleteStudent', id);
+            }
+        });
+    });
+</script>
+@endscript

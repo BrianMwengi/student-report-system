@@ -1,12 +1,14 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\Attributes\On;
 use App\Models\Student;
 use App\Models\Exam;
 
 new class extends Component {
     public $student_id;
 
+    #[On('deleteStudent')]
     public function deleteStudent($id)
     {
         $this->student_id = $id;
@@ -28,22 +30,5 @@ new class extends Component {
 }; ?>
 
 <div>
-    <script>
-        window.addEventListener('show-delete-confirmation', function(event) {
-            let id = event.detail.id;
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.livewire.emit('deleteStudent', id);
-                }
-            });
-        });
-    </script>
+   //
 </div>
