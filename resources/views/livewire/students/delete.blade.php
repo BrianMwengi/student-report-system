@@ -1,6 +1,8 @@
 <?php
 
 use Livewire\Volt\Component;
+use App\Models\Student;
+use App\Models\Exam;
 
 new class extends Component {
     public $student_id;
