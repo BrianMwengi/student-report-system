@@ -94,9 +94,9 @@ new class extends Component {
                 @error('class') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
     
-            @if($streams->isNotEmpty())
             <div class="mb-3">
-                <select class="form-select" wire:model="stream_id" required>
+                <label for="stream_id" class="block text-sm font-medium text-gray-700">Stream</label>
+                <select id="stream_id" wire:model="stream_id" class="form-select mt-1 block w-full">
                     <option value="">Select Stream</option>
                     @foreach ($streams as $stream)
                         <option value="{{ $stream->id }}">{{ $stream->name }}</option>
@@ -104,7 +104,6 @@ new class extends Component {
                 </select>
                 @error('stream_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
-            @endif
     
             <div class="mb-3">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
