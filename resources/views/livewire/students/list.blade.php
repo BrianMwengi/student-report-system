@@ -34,6 +34,16 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
+    public function deleteStudent($studentId)
+    {
+        $student = Student::find($studentId);
+
+        if ($student) {
+            $student->delete();
+            $this->dispatch('success', message: "Student deleted successfully!");
+        }
+    }
+
     #[On('student-created')]
     public function getStudents()
     {
@@ -83,6 +93,15 @@ new class extends Component {
             </div>
         </div>
 
+        {{-- Flash message --}}
+        <div x-data="{ open: false, message: '' }" 
+             x-cloak
+            @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+            x-show="open"
+            class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+            <span x-text="message"></span>
+        </div>
+
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
@@ -103,7 +122,7 @@ new class extends Component {
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <a href="" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            <button wire:click="confirmDelete()" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                            <button wire:click="deleteStudent({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                             <a href="" class="text-blue-600 hover:text-blue-900 ml-2">View Report Card</a>
                         </td>
                     </tr>
