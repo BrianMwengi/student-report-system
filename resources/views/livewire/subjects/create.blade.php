@@ -18,7 +18,7 @@ new class extends Component {
 
         if ($subjectExists) {
             // Flash a message to inform the user that the subject already exists
-            $this->dispatch('success', message: "A subject with the same name already exists.");
+            session()->flash('error', "A subject with the same name already exists.");
         } else {
             // Perform validation
             $validatedData = $this->validate();
@@ -60,6 +60,8 @@ new class extends Component {
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
                     </div>
                 </form>
+
+                {{-- Flash success message --}}
                 <div x-data="{ open: false, message: '' }" 
                      x-cloak
                     @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
@@ -67,6 +69,16 @@ new class extends Component {
                     class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
                <span x-text="message"></span>
            </div>
+
+           {{-- Flash error message --}}
+           @if (session('error'))
+           <div x-data="{ open: true }" 
+                x-init="setTimeout(() => open = false, 4000)"
+                x-show="open"
+                class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+               {{ session('error') }}
+           </div>
+        @endif
         </div>
     </div>
 </div>
