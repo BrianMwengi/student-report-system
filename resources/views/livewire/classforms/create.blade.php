@@ -5,29 +5,49 @@ use Livewire\Attributes\Validate;
 use App\Models\ClassForm;
 
 new class extends Component {
-
-    #[Validate('required|string|max:255')]
     public $name = '';
 
     public function submit(): void
     {
-        // Validation rules
-        $validatedData = $this->validate();
+        // Validate the class name format first
+        $this->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/[a-zA-Z].*[0-9]|[0-9].*[a-zA-Z]/', $value)) {
+                        $fail('The ' . $attribute . ' must include both a letter and a number.');
+                    }
+                },
+            ],
+        ]);
 
-        // Create a new class
-        ClassForm::create($validatedData);
+        // Convert the input name to lowercase for a case-insensitive comparison
+        $nameLowercase = strtolower($this->name);
 
-        // Show a success message or redirect to another page
-        $this->dispatch('success', message: "Class added successfully");
+        // Then, check if a class with the same name (case-insensitive) already exists
+        $classExists = ClassForm::whereRaw('LOWER(name) = ?', [$nameLowercase])->exists();
 
-         // Reset the 'name' property
-         $this->name = '';
+        if ($classExists) {
+            // If a class with the same name exists, use Livewire's error bag to add an error
+            session()->flash('error', 'A class with this name already exists.');
+            return; // Stop execution to prevent creating the class
+        }
+
+        // Proceed to create a new class with the validated data
+        ClassForm::create(['name' => $this->name]);
+
+         // Show a success message or redirect to another page
+         $this->dispatch('success', message: "Class added successfully");
+
+        // Reset the 'name' property
+        $this->name = '';
     }
-
 }; ?>
 
 <div>
-    <div>
+    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <h2 class="text-xl font-bold">Add Class</h2>
     
         <form wire:submit="submit" class="mt-4">
@@ -41,6 +61,7 @@ new class extends Component {
     
             <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
         </form>
+        {{-- Flash success message --}}
         <div x-data="{ open: false, message: '' }" 
              x-cloak
                 @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
@@ -48,6 +69,15 @@ new class extends Component {
                 class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
                <span x-text="message"></span>
         </div>
+        {{-- Flash error message --}}
+        @if (session('error'))
+       <div x-data="{ open: true }" 
+            x-init="setTimeout(() => open = false, 4000)"
+            x-show="open"
+            class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+           {{ session('error') }}
+       </div>
+    @endif
         </div>        
     </div>    
 </div>
