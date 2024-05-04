@@ -19,6 +19,7 @@ new class extends Component {
     public $exam3;
     #[Validate('required|string|max:255')]
     public $teacher;
+    public $students;
     public $subjects;
     public $student_name;
     public $class;
@@ -32,6 +33,8 @@ new class extends Component {
         $this->subjects = Subject::all();
         // Get the first subject id
         $this->subject_id = $this->subjects->first() ? $this->subjects->first()->id : null;
+        // Fetch all students
+        $this->students = Student::select('id', 'adm_no', 'name')->get();
     }
 
     public function submit()
@@ -78,7 +81,13 @@ new class extends Component {
         <h2 class="mb-4 text-2xl font-bold">Add Exam Details</h2>
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <input type="text" class="form-input" wire:model="adm_no" placeholder="Admission Number" required>
+                <label for="studentSelect" class="form-label">Select Student</label>
+                <select id="studentSelect" class="form-select" wire:model="adm_no" required>
+                    <option value="">Select a Student</option>
+                    @foreach ($students as $student)
+                        <option value="{{ $student->adm_no }}">{{ $student->name }} - {{ $student->adm_no }}</option>
+                    @endforeach
+                </select>
                 @error('adm_no') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
     
