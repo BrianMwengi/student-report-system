@@ -37,7 +37,7 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    // Listen for the student-created event
+    // Listen for the student-deleted event
     #[On('studentDeleted')]
     public function studentDeleted($message)
     {
