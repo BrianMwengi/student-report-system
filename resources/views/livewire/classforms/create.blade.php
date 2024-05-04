@@ -31,8 +31,8 @@ new class extends Component {
         <h2 class="text-xl font-bold">Add Class</h2>
     
         <form wire:submit="submit" class="mt-4">
-            <input type="text" id="name" class="form-input @error('name') border-red-500 @enderror" wire:model="name" placeholder="Class Name">
-    
+            <input type="text" id="name" class="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror" wire:model="name" placeholder="Class Name">
+           
             @error('name')
                 <div class="text-red-500 mt-1">
                     {{ $message }}
