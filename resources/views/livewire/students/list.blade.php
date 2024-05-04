@@ -2,17 +2,20 @@
 
 use Livewire\Volt\Component;
 use App\Models\Student;
+use App\Models\Exam;
 use Livewire\Attributes\On; 
 use Livewire\WithPagination;
 
 new class extends Component {
     use WithPagination;
-    
+
     // These are the public properties that will be accessible in the blade file
+    public $student_id;
     public $form = 1;
     public $searchTerm = '';
     public $sortColumn = 'name';
     public $sortDirection = 'asc';
+    
 
     // updateForm is called when the form select is changed
     public function updatedForm($value)
@@ -45,6 +48,26 @@ new class extends Component {
     public function confirmDelete($id)
     {
         $this->dispatch('show-delete-confirmation', ['id' => $id]);
+    }
+
+    #[On('deleteStudent')]
+    public function deleteStudent($id)
+    {
+        $this->student_id = $id;
+
+        // Find and delete the related exam records
+        Exam::where('student_id', $this->student_id)->delete();
+
+        // Find the student
+        $student = Student::find($this->student_id);
+
+        // Check if the student exists and delete
+        if ($student) {
+            $student->delete();
+        }
+
+        // Dispatch an event to refresh the student list and pass the message
+        $this->dispatch('studentDeleted', 'Student deleted successfully.');
     }
 
     #[On('student-created')]
@@ -96,14 +119,13 @@ new class extends Component {
             </div>
         </div>
 
-        {{-- Flash message --}}
-        {{-- <div x-data="{ open: false, message: '' }" 
-             x-cloak
-            @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
-            x-show="open"
-            class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
-            <span x-text="message"></span>
-        </div> --}}
+        {{--Flash message --}}
+        @if (session()->has('message'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md my-4" role="alert">
+                {{ session('message') }}
+            </div>
+        @endif
+
 
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
@@ -150,7 +172,7 @@ new class extends Component {
 @script
 <script>
     window.addEventListener('show-delete-confirmation', function(event) {
-        let id = event.detail.id;
+        let id = event.detail[0]; // Access the student's ID
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -161,7 +183,7 @@ new class extends Component {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.livewire.emit('deleteStudent', id);
+                $wire.dispatchSelf('deleteStudent', id);
             }
         });
     });
