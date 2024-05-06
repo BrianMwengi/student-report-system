@@ -44,7 +44,7 @@ new class extends Component {
     
         <form wire:submit ="submit" class="mt-4">
             <div class="form-group">
-                <input type="text" class="form-input @error('name') border-red-500 @enderror" wire:model="name" placeholder="Stream Name">
+                <input type="text" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror" wire:model="name" placeholder="Stream Name">
     
                 @error('name')
                 <div class="text-red-500 mt-1">
@@ -54,7 +54,7 @@ new class extends Component {
             </div>
     
             <div class="form-group mt-4">
-                <select class="form-select @error('class_id') border-red-500 @enderror" wire:model="class_id">
+                <select class="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('class_id') border-red-500 @enderror" wire:model="class_id">
                     <option value="">Select Class</option>
                     @foreach ($class_forms as $class)
                         <option value="{{ $class->id }}">{{ $class->name }}</option>
