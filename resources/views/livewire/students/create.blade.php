@@ -75,17 +75,17 @@ new class extends Component {
     
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <input type="text" class="form-input" wire:model="student_name" placeholder="Student Name" required>
+                <input type="text" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" wire:model="student_name" placeholder="Student Name" required>
                 @error('student_name') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
     
             <div class="mb-3">
-                <input type="text" class="form-input" wire:model="adm_no" placeholder="Admission Number" required>
+                <input type="text" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" wire:model="adm_no" placeholder="Admission Number" required>
                 @error('adm_no') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
     
             <div class="mb-3">
-                <select class="form-select" wire:model="class" required>
+                <select class="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" wire:model="class" required>
                     <option value="">Select Class</option>
                     @foreach ($class_forms as $class)
                         <option value="{{ $class->id }}">{{ $class->name }}</option>
@@ -96,7 +96,7 @@ new class extends Component {
     
             <div class="mb-3">
                 <label for="stream_id" class="block text-sm font-medium text-gray-700">Stream</label>
-                <select id="stream_id" wire:model="stream_id" class="form-select mt-1 block w-full">
+                <select id="stream_id" wire:model="stream_id" class="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="">Select Stream</option>
                     @foreach ($streams as $stream)
                         <option value="{{ $stream->id }}">{{ $stream->name }}</option>
