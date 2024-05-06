@@ -6,26 +6,39 @@ use App\Models\Stream;
 use App\Models\ClassForm;
 
 new class extends Component {
-    #[Validate('required|string|max:255')]
+
     public $name = '';
-    #[Validate('required|exists:class_forms,id')]
-    public $class_id ='';
+    public $class_id = '';
 
     public function submit(): void
     {
-        // Validation rules
-        $validatedData = $this->validate();
+        // Custom validation rule to ensure the name follows the specific format
+        $validatedData = $this->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:streams,name',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/^Form \d+[a-zA-Z\s]+$/', $value)) {
+                        $fail('The ' . $attribute . ' must start with "Form ", followed by a number, and followed by one or more letters.');
+                    }
+                },
+            ],
+            'class_id' => ['required', 'exists:class_forms,id'],
+        ]);
 
-        // Create a new stream
+        // Create a new stream with the validated data
         Stream::create($validatedData);
 
-        // Show a success message or redirect to another page
-        $this->dispatch('success', message: "Stream added successfully!");
+       // Show a success message or redirect to another page
+        $this->dispatch('success', message: "Class Stream added successfully");
 
         // Reset the form fields
         $this->name = '';
         $this->class_id = '';
     }
+
 
     // Load the class forms data 
     public function with(): array
