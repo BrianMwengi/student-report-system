@@ -78,12 +78,6 @@ new class extends Component {
     $this->subject_id = $this->subjects->first()->id;
 }
 
-public static function route(): string
-{
-    return '/student/{id}/edit';
-}
-
-
 public function updateStudent()
 { 
     $validatedData = $this->validate();
@@ -150,7 +144,7 @@ public function updatedSubjectId()
 
 <div>
     <div class="container">
-        <form wire:submit.prevent="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <form wire:submit="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
                 <input type="text" id="name" wire:model="name" class="form-input">

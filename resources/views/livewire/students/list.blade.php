@@ -84,6 +84,11 @@ new class extends Component {
             ->paginate(10);
     }
 
+    public function edit($id)
+    {
+        $this->editing = Student::find($id);
+    }
+
     // State method to persist the form selection
     public function state(): array
     {
@@ -146,11 +151,14 @@ new class extends Component {
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->adm_no }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('students.edit', ['id' => $student->id]) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                            <button wire:click="edit({{ $student->id }})" class="text-indigo-600 hover:text-indigo-900">Edit</button>
                             <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                             <a href="" class="text-blue-600 hover:text-blue-900 ml-2">View Report Card</a>
                         </td>
                     </tr>
+                    @if ($editing)
+                        @livewire('students.edit', ['student' => $editing])
+                    @endif
                 @endforeach
             </tbody>
         </table>
