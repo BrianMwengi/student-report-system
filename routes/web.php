@@ -26,7 +26,7 @@ Route::get('streams', [StreamController::class, 'index'])
 
 Route::get('students', [StudentController::class, 'index'])
     ->middleware(['auth', 'verified'])
-    ->name('streams'); 
+    ->name('students'); 
 
 Route::get('exams', [ExamController::class, 'index'])
         ->middleware(['auth', 'verified'])

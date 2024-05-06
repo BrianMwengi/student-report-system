@@ -146,7 +146,7 @@ new class extends Component {
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->adm_no }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                            <a href="{{ route('students.edit', ['id' => $student->id]) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                             <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                             <a href="" class="text-blue-600 hover:text-blue-900 ml-2">View Report Card</a>
                         </td>

@@ -78,6 +78,12 @@ new class extends Component {
     $this->subject_id = $this->subjects->first()->id;
 }
 
+public static function route(): string
+{
+    return '/student/{id}/edit';
+}
+
+
 public function updateStudent()
 { 
     $validatedData = $this->validate();
@@ -113,11 +119,11 @@ public function updateStudent()
                     'teacher' => $this->teacher,
                 ]
             );
-  
-    session()->flash('message', 'Student details updated successfully.');
+
+        $this->dispatch('success', message: "Student details updated successfully.!");
             
     } else {
-        session()->flash('error_message', 'Failed to update student details.');
+        session()->flash('error', 'Failed to update student details.');
     }
 }
 
@@ -132,24 +138,130 @@ public function updatedSubjectId()
             $this->teacher = $exam->teacher;
             $this->examId = $exam->id;
         } else {
-            $this->resetExamFields();
+            $this->exam1 = '';
+            $this->exam2 = '';
+            $this->exam3 = '';
+            $this->teacher = '';
+            $this->examId = null;
         }
-    } else {
-        $this->resetExamFields();
     }
 }
-
-private function resetExamFields()
-{
-    $this->exam1 = '';
-    $this->exam2 = '';
-    $this->exam3 = '';
-    $this->teacher = '';
-    $this->examId = null;
-}
-    
 }; ?>
 
 <div>
-    //
+    <div class="container">
+        <form wire:submit.prevent="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
+                <input type="text" id="name" wire:model="name" class="form-input">
+                @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+            
+            <div>
+                <label for="adm_no" class="block text-sm font-medium text-gray-700">Admission Number:</label>
+                <input type="text" id="adm_no" wire:model="adm_no" class="form-input">
+                @error('adm_no') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+            
+            <div>
+                <label for="primary_school" class="block text-sm font-medium text-gray-700">Primary School:</label>
+                <input type="text" id="primary_school" wire:model="primary_school" class="form-input">
+            </div>
+            
+            <div>
+                <label for="kcpe_year" class="block text-sm font-medium text-gray-700">KCPE Year:</label>
+                <input type="number" id="kcpe_year" wire:model="kcpe_year" class="form-input">
+            </div>
+            
+            <div>
+                <label for="kcpe_marks" class="block text-sm font-medium text-gray-700">KCPE Marks:</label>
+                <input type="number" id="kcpe_marks" wire:model="kcpe_marks" class="form-input">
+            </div>
+    
+            <div>
+                <label for="kcpe_position" class="block text-sm font-medium text-gray-700">KCPE Position:</label>
+                <input type="number" id="kcpe_position" wire:model="kcpe_position" class="form-input">
+            </div>
+    
+            <div>
+                <label for="subject_id" class="block text-sm font-medium text-gray-700">Subject:</label>
+                <select id="subject_id" wire:model="subject_id" class="form-select">
+                    <option value="">-- Select Subject --</option>
+                    @foreach($subjects as $subject)
+                        <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    @endforeach
+                </select>
+                @error('subject_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="exam1" class="block text-sm font-medium text-gray-700">Exam 1:</label>
+                <input type="number" id="exam1" wire:model="exam1" class="form-input">
+                @error('exam1') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="exam2" class="block text-sm font-medium text-gray-700">Exam 2:</label>
+                <input type="number" id="exam2" wire:model="exam2" class="form-input">
+                @error('exam2') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="exam3" class="block text-sm font-medium text-gray-700">Exam 3:</label>
+                <input type="number" id="exam3" wire:model="exam3" class="form-input">
+                @error('exam3') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="teacher" class="block text-sm font-medium text-gray-700">Teacher:</label>
+                <input type="text" id="teacher" wire:model="teacher" class="form-input">
+                @error('teacher') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="form" class="block text-sm font-medium text-gray-700">Form:</label>
+                <select wire:model="form" class="form-select">
+                    <option value="">Select Form</option>
+                    @foreach($classes as $class)
+                        <option value="{{ $class->id }}">{{ $class->name }}</option>
+                    @endforeach
+                </select>
+                @error('form') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div>
+                <label for="stream_id" class="block text-sm font-medium text-gray-700">Stream:</label>
+                <select wire:model="stream_id" class="form-select">
+                    <option value="">Select Stream</option>
+                    @foreach ($streams as $stream)
+                        <option value="{{ $stream->id }}">{{ $stream->name }}</option>
+                    @endforeach
+                </select>
+                @error('stream_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+    
+            <div class="col-span-2">
+                <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
+            </div>
+        </form>
+    </div>
+
+    {{-- Flash success message --}}
+    <div x-data="{ open: false, message: '' }" 
+            x-cloak
+        @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
+        x-show="open"
+        class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+        <span x-text="message"></span>
+    </div>
+
+     {{-- Flash error message --}}
+     @if (session('error'))
+     <div x-data="{ open: true }" 
+          x-init="setTimeout(() => open = false, 4000)"
+          x-show="open"
+          class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+         {{ session('error') }}
+     </div>
+  @endif    
 </div>
