@@ -28,6 +28,8 @@ Route::get('students', [StudentController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('students');
 
+Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.edit');
+
 Route::get('exams', [ExamController::class, 'index'])
         ->middleware(['auth', 'verified'])
         ->name('exams'); 

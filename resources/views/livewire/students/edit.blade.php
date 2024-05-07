@@ -10,6 +10,7 @@ use App\Models\StudentDetail;
 use Livewire\Attributes\Validate;
 
 new class extends Component {
+    public Student $student;
     public $studentId;
     #[Validate('required')]
     public $name;
@@ -41,25 +42,23 @@ new class extends Component {
     public $form_sequence_number;
     
     public function mount($id)
-    { 
-        $student = Student::find($id);
-
-        if ($student) {
-            $this->studentId = $student->id;
-            $this->form_sequence_number = $student->form_sequence_number;
-            $this->name = $student->name;
-            $this->adm_no = $student->adm_no;
-            $this->form = $student->class_id; // assuming the student has a class_id field linking to the classes table
-            $this->stream_id = $student->stream_id;
-
-        $studentDetails = $student->details;
-        if ($studentDetails) {
-            $this->studentDetailsId = $studentDetails->id;
-            $this->primary_school = $studentDetails->primary_school;
-            $this->kcpe_year = $studentDetails->kcpe_year;
-            $this->kcpe_marks = $studentDetails->kcpe_marks;
-            $this->kcpe_position = $studentDetails->kcpe_position;
-        }
+    {
+        $this->student = Student::find($id);
+        if ($this->student) {
+            $this->studentId = $this->student->id;
+            $this->form_sequence_number = $this->student->form_sequence_number;
+            $this->name = $this->student->name;
+            $this->adm_no = $this->student->adm_no;
+            $this->form = $this->student->class_id; // assuming the student has a class_id field linking to the classes table
+            $this->stream_id = $this->student->stream_id;
+            $studentDetails = $this->student->details;
+            if ($studentDetails) {
+                $this->studentDetailsId = $studentDetails->id;
+                $this->primary_school = $studentDetails->primary_school;
+                $this->kcpe_year = $studentDetails->kcpe_year;
+                $this->kcpe_marks = $studentDetails->kcpe_marks;
+                $this->kcpe_position = $studentDetails->kcpe_position;
+            }
 
         $exam = Exam::where('student_id', $this->studentId)->first();
         if ($exam) {
@@ -78,18 +77,17 @@ new class extends Component {
     $this->subject_id = $this->subjects->first()->id;
 }
 
-public function updateStudent()
-{ 
-    $validatedData = $this->validate();
+    public function updateStudent()
+    { 
+        $validatedData = $this->validate();
 
-    $validatedData['form'] = $this->form;
-    $validatedData['stream_id'] = $streamIdValue;
+        $validatedData['form'] = $this->form;
 
-    $student = Student::find($this->studentId);
+        $student = Student::find($this->studentId);
 
-    if ($student) {
-        // Update the Student model
-        $student->update($validatedData);
+        if ($student) {
+            // Update the Student model
+            $student->update($validatedData);
 
             // Update the StudentDetail model
             StudentDetail::updateOrCreate(
@@ -114,12 +112,20 @@ public function updateStudent()
                 ]
             );
 
-        $this->dispatch('success', message: "Student details updated successfully.!");
-            
-    } else {
-        session()->flash('error', 'Failed to update student details.');
+            $this->dispatch('success', message: "Student details updated successfully.!");
+                
+        } else {
+            session()->flash('error', 'Failed to update student details.');
+        }
+        
+        $this->dispatch('student-updated');
     }
-}
+
+    public function cancel(): void
+    {
+        $this->dispatch('student-edit-canceled');
+    }
+
 
 public function updatedSubjectId()
 {  
@@ -236,6 +242,7 @@ public function updatedSubjectId()
     
             <div class="col-span-2">
                 <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
+                <button wire:click.prevent="cancel" class="w-full mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancel</button>
             </div>
         </form>
     </div>

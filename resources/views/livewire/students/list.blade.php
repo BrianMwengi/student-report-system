@@ -15,6 +15,7 @@ new class extends Component {
     public $searchTerm = '';
     public $sortColumn = 'name';
     public $sortDirection = 'asc';
+    public ?Student $editing = null;
     
 
     // updateForm is called when the form select is changed
@@ -84,9 +85,19 @@ new class extends Component {
             ->paginate(10);
     }
 
-    public function edit($id)
+    public function edit($id): void
     {
         $this->editing = Student::find($id);
+        $this->getStudents();
+    }
+
+    #[On('student-updated')]
+    #[On('student-edit-canceled')]
+    public function disableEditing()
+    {
+        $this->editing = null;
+
+        $this->getStudents();
     }
 
     // State method to persist the form selection
@@ -151,13 +162,13 @@ new class extends Component {
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->adm_no }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <button wire:click="edit({{ $student->id }})" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                            <a href="{{ route('student.edit', ['id' => $student->id]) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                             <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                             <a href="" class="text-blue-600 hover:text-blue-900 ml-2">View Report Card</a>
                         </td>
                     </tr>
-                    @if ($editing)
-                        @livewire('students.edit', ['student' => $editing])
+                    @if ($student->is($editing))
+                       @livewire('students.edit', ['id' => $student->id])
                     @endif
                 @endforeach
             </tbody>
