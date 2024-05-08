@@ -238,9 +238,3 @@ new class extends Component {
     });
 </script>
 @endscript
-
-<script>
-    window.addEventListener('beforeunload', function (e) {
-        @this.call('saveState');
-    });
-</script>
