@@ -99,7 +99,7 @@ new class extends Component {
     {
         $this->editing = $student;
         $this->getStudents();
-        $this->render(); 
+        $this->render();
     }
 
     #[On('student-updated')]
