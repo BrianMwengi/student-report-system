@@ -116,7 +116,8 @@ new class extends Component {
                 ]
             );
 
-            $this->dispatch('success', message: "Student details updated successfully!");
+        // If the update was successful, flash a success message
+        session()->flash('success', 'Student updated successfully');
                 
         } else {
             session()->flash('error', 'Failed to update student details.');
@@ -130,29 +131,36 @@ new class extends Component {
         $this->dispatch('student-edit-canceled');
     }
 
+    public function updatedSubjectId()
+    {  
+        if ($this->subject_id) {
+            $exam = Exam::where('student_id', $this->studentId)->where('subject_id', $this->subject_id)->first();
 
-public function updatedSubjectId()
-{  
-    if ($this->subject_id) {
-        $exam = Exam::where('student_id', $this->studentId)->where('subject_id', $this->subject_id)->first();
-        if ($exam) {
-            $this->exam1 = $exam->exam1;
-            $this->exam2 = $exam->exam2;
-            $this->exam3 = $exam->exam3;
-            $this->teacher = $exam->teacher;
-            $this->examId = $exam->id;
+            if ($exam) {
+                $this->exam1 = $exam->exam1;
+                $this->exam2 = $exam->exam2;
+                $this->exam3 = $exam->exam3;
+                $this->teacher = $exam->teacher;
+                $this->examId = $exam->id;
+            } else {
+                $this->resetExamFields();
+            }
         } else {
-            $this->exam1 = '';
-            $this->exam2 = '';
-            $this->exam3 = '';
-            $this->teacher = '';
-            $this->examId = null;
+            $this->resetExamFields();
         }
     }
-}
-}; ?>
 
- <div>
+    private function resetExamFields()
+    {
+        $this->exam1 = '';
+        $this->exam2 = '';
+        $this->exam3 = '';
+        $this->teacher = '';
+        $this->examId = null;
+    }
+    }; ?>
+
+    <div>
        <form wire:submit.prevent="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
@@ -249,11 +257,16 @@ public function updatedSubjectId()
             </div>
         </form>
         
-    {{-- Flash success message --}}
-    // create a flash success message
-    
+        {{-- Flash success message --}}
+        @if (session('success'))
+        <div x-data="{ open: true }" 
+        x-init="setTimeout(() => open = false, 4000)"
+        x-show="open"
+        class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
+        {{ session('success') }}
+        </div>
+        @endif
 
-    
         {{-- Flash error message --}}
         @if (session('error'))
         <div x-data="{ open: true }" 
@@ -263,4 +276,4 @@ public function updatedSubjectId()
         {{ session('error') }}
         </div>
         @endif   
-</div>
+    </div>
