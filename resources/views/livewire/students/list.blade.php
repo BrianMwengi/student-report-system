@@ -85,12 +85,6 @@ new class extends Component {
             ->paginate(10);
     }
 
-    public function edit(Student $student): void
-    {
-        $this->editing = $student;
-        $this->getStudents();
-    }
-
     public function openModal($id)
     {
         $this->selectedStudentId = $id;
@@ -99,6 +93,12 @@ new class extends Component {
     public function closeModal()
     {
         $this->selectedStudentId = null;
+    }
+
+    public function edit(Student $student): void
+    {
+        $this->editing = $student;
+        $this->getStudents();
     }
 
     #[On('student-updated')]
