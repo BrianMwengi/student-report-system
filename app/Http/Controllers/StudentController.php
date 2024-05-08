@@ -14,10 +14,4 @@ class StudentController extends Controller
             //
         ]);
     }
-
-    public function edit($id): View
-    {
-        $student = Student::find($id);
-        return view('livewire.students.edit', ['student' => $student]);
-    }
 }

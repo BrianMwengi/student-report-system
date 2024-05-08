@@ -41,7 +41,7 @@ new class extends Component {
     public $examId;
     public $form_sequence_number;
     
-    public function mount($id)
+    public function mount($id): void
     {
         $this->student = Student::find($id);
         if ($this->student) {
@@ -51,13 +51,15 @@ new class extends Component {
             $this->adm_no = $this->student->adm_no;
             $this->form = $this->student->class_id; // assuming the student has a class_id field linking to the classes table
             $this->stream_id = $this->student->stream_id;
-            $studentDetails = $this->student->details;
-            if ($studentDetails) {
-                $this->studentDetailsId = $studentDetails->id;
-                $this->primary_school = $studentDetails->primary_school;
-                $this->kcpe_year = $studentDetails->kcpe_year;
-                $this->kcpe_marks = $studentDetails->kcpe_marks;
-                $this->kcpe_position = $studentDetails->kcpe_position;
+            
+            $this->studentDetailsId = $this->student->details->id;
+            $this->studentDetails = $this->student->details;
+        
+            if ($this->studentDetails) {
+                $this->primary_school = $this->studentDetails->primary_school;
+                $this->kcpe_marks = $this->studentDetails->kcpe_marks;
+                $this->kcpe_year = $this->studentDetails->kcpe_year;
+                $this->kcpe_position = $this->studentDetails->kcpe_position;
             }
 
         $exam = Exam::where('student_id', $this->studentId)->first();
@@ -77,9 +79,11 @@ new class extends Component {
     $this->subject_id = $this->subjects->first()->id;
 }
 
-    public function updateStudent()
+    public function updateStudent(): void
     { 
         $validatedData = $this->validate();
+
+        $this->student->update($validatedData);
 
         $validatedData['form'] = $this->form;
 
@@ -112,7 +116,7 @@ new class extends Component {
                 ]
             );
 
-            $this->dispatch('success', message: "Student details updated successfully.!");
+            $this->dispatch('success', message: "Student details updated successfully!");
                 
         } else {
             session()->flash('error', 'Failed to update student details.');
@@ -148,9 +152,8 @@ public function updatedSubjectId()
 }
 }; ?>
 
-<div>
-    <div class="container">
-        <form wire:submit="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+ <div>
+       <form wire:submit.prevent="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
                 <input type="text" id="name" wire:model="name" class="form-input">
@@ -241,28 +244,23 @@ public function updatedSubjectId()
             </div>
     
             <div class="col-span-2">
-                <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
-                <button wire:click.prevent="cancel" class="w-full mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancel</button>
+                <button wire:click.prevent="updateStudent" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
+                <button class="w-full mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" wire:click.prevent="cancel">Cancel</button>
             </div>
         </form>
-    </div>
-
+        
     {{-- Flash success message --}}
-    <div x-data="{ open: false, message: '' }" 
-            x-cloak
-        @success.window="open = true; message = $event.detail.message; setTimeout(() => open = false, 4000)"
-        x-show="open"
-        class="mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded">
-        <span x-text="message"></span>
-    </div>
+    // create a flash success message
+    
 
-     {{-- Flash error message --}}
-     @if (session('error'))
-     <div x-data="{ open: true }" 
-          x-init="setTimeout(() => open = false, 4000)"
-          x-show="open"
-          class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
-         {{ session('error') }}
-     </div>
-  @endif    
+    
+        {{-- Flash error message --}}
+        @if (session('error'))
+        <div x-data="{ open: true }" 
+        x-init="setTimeout(() => open = false, 4000)"
+        x-show="open"
+        class="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
+        {{ session('error') }}
+        </div>
+        @endif   
 </div>

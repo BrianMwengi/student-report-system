@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\StudentDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -40,7 +41,7 @@ class Student extends Model
     }
 
     // This function returns the student details that belong to a student.
-    public function studentdetails(): HasOne
+    public function details(): HasOne
     {
         return $this->hasOne(StudentDetail::class);
     }
