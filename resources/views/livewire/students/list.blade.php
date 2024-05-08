@@ -29,6 +29,7 @@ new class extends Component {
         $this->students = $this->getStudents();
     }
 
+
     // Sort the students by the selected column
     public function sortBy($column)
     {
@@ -99,7 +100,6 @@ new class extends Component {
     {
         $this->editing = $student;
         $this->getStudents();
-        $this->render();
     }
 
     #[On('student-updated')]
@@ -128,12 +128,12 @@ new class extends Component {
         ];
     }
 }; ?>
-<div wire:poll.500ms>
+<div>
     <div class="container p-6 bg-white shadow-md rounded-lg">
         <div class="flex justify-between items-center mb-3">
             <div class="col-auto">
                 <label for="form" class="block text-sm font-medium text-gray-700">Select Form:</label>
-                <select wire:model="form" id="form" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
+                <select wire:model.live="form" id="form" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
                     <option value="1">Form 1</option>
                     <option value="2">Form 2</option>
                     <option value="3">Form 3</option>
@@ -141,7 +141,7 @@ new class extends Component {
                 </select>
             </div>
             <div class="col-auto">
-                <input type="text" wire:model="searchTerm" placeholder="Search students..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
+                <input type="text" wire:model.live="searchTerm" placeholder="Search students..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
             </div>
         </div>
 
@@ -238,3 +238,9 @@ new class extends Component {
     });
 </script>
 @endscript
+
+<script>
+    window.addEventListener('beforeunload', function (e) {
+        @this.call('saveState');
+    });
+</script>

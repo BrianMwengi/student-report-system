@@ -49,12 +49,11 @@ new class extends Component {
             $this->form_sequence_number = $this->student->form_sequence_number;
             $this->name = $this->student->name;
             $this->adm_no = $this->student->adm_no;
-            $this->form = $this->student->class_id; // assuming the student has a class_id field linking to the classes table
+            $this->form = $this->student->form; 
             $this->stream_id = $this->student->stream_id;
             
-            $this->studentDetailsId = $this->student->details->id;
+            $this->studentDetailsId = $this->student->details;
             $this->studentDetails = $this->student->details;
-        
             if ($this->studentDetails) {
                 $this->primary_school = $this->studentDetails->primary_school;
                 $this->kcpe_marks = $this->studentDetails->kcpe_marks;
@@ -82,28 +81,32 @@ new class extends Component {
     public function updateStudent(): void
     { 
         $validatedData = $this->validate();
-
-        $this->student->update($validatedData);
-
         $validatedData['form'] = $this->form;
-
-        $student = Student::find($this->studentId);
-
-        if ($student) {
-            // Update the Student model
+    
+        if ($this->studentId) {
+            $student = Student::find($this->studentId);
             $student->update($validatedData);
-
-            // Update the StudentDetail model
-            StudentDetail::updateOrCreate(
-                ['id' => $this->studentDetailsId, 'student_id' => $this->studentId],
-                [
-                    'primary_school' => $this->primary_school,
-                    'kcpe_year' => $this->kcpe_year,
-                    'kcpe_marks' => $this->kcpe_marks,
-                    'kcpe_position' => $this->kcpe_position,
-                ]
-            );
             
+            $studentDetails = StudentDetail::where('student_id', $this->studentId)->first();
+            if ($studentDetails) {
+                $kcpeDetails = [];
+                if ($this->primary_school) {
+                    $kcpeDetails['primary_school'] = $this->primary_school;
+                }
+                if ($this->kcpe_marks) {
+                    $kcpeDetails['kcpe_marks'] = $this->kcpe_marks;
+                }
+                if ($this->kcpe_year) {
+                    $kcpeDetails['kcpe_year'] = $this->kcpe_year;
+                }
+                if ($this->kcpe_position) {
+                    $kcpeDetails['kcpe_position'] = $this->kcpe_position;
+                }
+                if (!empty($kcpeDetails)) {
+                    $studentDetails->update($kcpeDetails);
+                }
+            }
+    
             // Update the Exam model
             Exam::updateOrCreate(
                 ['id' => $this->examId, 'student_id' => $this->studentId, 'subject_id' => $this->subject_id],
@@ -115,17 +118,16 @@ new class extends Component {
                     'teacher' => $this->teacher,
                 ]
             );
-
-        // If the update was successful, flash a success message
-        session()->flash('success', 'Student updated successfully');
-                
+    
+            // If the update was successful, flash a success message
+            session()->flash('success', 'Student updated successfully');
+            $this->dispatch('student-updated');
+    
         } else {
             session()->flash('error', 'Failed to update student details.');
         }
-        
-        $this->dispatch('student-updated');
     }
-
+    
     public function updatedSubjectId()
     {  
         if ($this->subject_id) {
@@ -154,9 +156,8 @@ new class extends Component {
         $this->examId = null;
     }
     }; ?>
-
     <div>
-       <form wire:submit.prevent="updateStudent" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+       <form class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div class="mb-3">
                 <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
                 <input type="text" id="name" wire:model="name" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -247,7 +248,7 @@ new class extends Component {
             </div>
     
             <div class="mb-3">
-                <button wire:click.prevent="updateStudent" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
+                <button wire:click="updateStudent" wire:loading.attr="disabled" wire:target="updateStudent" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
             </div>
         </form>
         
