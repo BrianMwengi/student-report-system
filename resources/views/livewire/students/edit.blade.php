@@ -73,11 +73,11 @@ new class extends Component {
         }
     }
 
-    $this->classes = ClassForm::all();
-    $this->streams = Stream::all();
-    $this->subjects = Subject::all();
-    $this->subject_id = $this->subjects->first()->id;
-}
+        $this->classes = ClassForm::all();
+        $this->streams = Stream::all();
+        $this->subjects = Subject::all();
+        $this->subject_id = $this->subjects->first()->id;
+    }
 
     public function updateStudent(): void
     { 
@@ -248,7 +248,6 @@ new class extends Component {
     
             <div class="mb-3">
                 <button wire:click.prevent="updateStudent" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Student</button>
-                <button class="w-full mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" wire:click.prevent="cancel">Cancel</button>
             </div>
         </form>
         
