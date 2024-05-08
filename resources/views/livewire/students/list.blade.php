@@ -171,7 +171,7 @@ new class extends Component {
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $student->form_sequence_number }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $student->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $student->adm_no }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream ? $student->stream->name : 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $student->stream->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <button wire:click="openModal({{ $student->id }})" class="text-indigo-600 hover:text-indigo-900">{{ __('Edit') }}</button>
                                         <button wire:click="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
