@@ -13,7 +13,6 @@ new class extends Component {
     public $adm_no;
     #[Validate('required|exists:class_forms,id')]
     public $class;
-    #[Validate('required|exists:streams,id')]
     public $stream_id;
     public $class_forms;
     public $streams;
@@ -28,11 +27,27 @@ new class extends Component {
         $this->class = null;
     }
 
+    // Additional Validation for form mismatch
+    public function rules(): array
+    {
+        return [
+            'stream_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $selectedStream = Stream::find($value);
+                    if ($selectedStream && substr($selectedStream->name, 5, 1) != $this->class) {
+                        $fail('The selected stream does not match the form.');
+                    }
+                },
+            ],
+        ];
+    }
+
         public function submit(): void
         {  
             // Validate the input fields
             $this->validate();
-   
+
             // Find the class with the selected class ID
             $selectedClass = ClassForm::find($this->class);
 
@@ -102,7 +117,9 @@ new class extends Component {
                         <option value="{{ $stream->id }}">{{ $stream->name }}</option>
                     @endforeach
                 </select>
-                @error('stream_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
+                @error('stream_id')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
             </div>
     
             <div class="mb-3">

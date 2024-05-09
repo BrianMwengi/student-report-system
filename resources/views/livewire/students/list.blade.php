@@ -3,7 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Student;
 use App\Models\Exam;
-use Livewire\Attributes\On; 
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
 new class extends Component {
@@ -20,7 +20,7 @@ new class extends Component {
 
     // updateForm is called when the form select is changed
     public function updatedForm($value)
-    {   
+    {
        // Save the selected form to the session
         session()->put('students_list_form', $value);
         // Reset the page to 1
@@ -46,7 +46,7 @@ new class extends Component {
         session()->flash('message', $message);
         $this->render();
     }
-    
+
     public function confirmDelete($id)
     {
         $this->dispatch('show-delete-confirmation', ['id' => $id]);
@@ -69,7 +69,7 @@ new class extends Component {
         }
 
         // Dispatch an event to refresh the student list and pass the message
-        $this->dispatch('studentDeleted', 'Student deleted successfully.');
+        session()->flash('studentDeleted', 'Student deleted successfully.');
     }
 
     #[On('student-created')]
@@ -145,13 +145,12 @@ new class extends Component {
             </div>
         </div>
 
-        {{--Flash message --}}
-        @if (session()->has('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md my-4" role="alert">
-                {{ session('message') }}
+        {{--Flash message for student deletion--}}
+        @if (session()->has('studentDeleted'))
+            <div id="flash-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md my-4" role="alert">
+                {{ session('studentDeleted') }}
             </div>
         @endif
-
 
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
@@ -238,3 +237,13 @@ new class extends Component {
     });
 </script>
 @endscript
+
+{{-- Hide flash message for student deleted --}}
+<script>
+    setTimeout(function() {
+        const element = document.getElementById('flash-message');
+        if (element) {
+            element.style.display = 'none';
+        }
+    }, 5000); // Hide after 5 seconds
+</script>
