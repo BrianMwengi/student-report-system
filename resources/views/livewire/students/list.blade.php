@@ -217,6 +217,7 @@ new class extends Component {
     </div>
 </div>
 
+{{-- Listen for the show-delete-confirmation event --}}
 @script
 <script>
     window.addEventListener('show-delete-confirmation', function(event) {
