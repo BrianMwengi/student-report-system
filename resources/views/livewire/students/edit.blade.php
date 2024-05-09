@@ -41,9 +41,12 @@ new class extends Component {
     public $form_sequence_number;
     public Student $student;
     
+    // Initialize the component
     public function mount($id): void
     {
+        // Find the student with the given ID
         $this->student = Student::find($id);
+        // if the student is found, set the properties
         if ($this->student) {
             $this->studentId = $this->student->id;
             $this->form_sequence_number = $this->student->form_sequence_number;
@@ -52,8 +55,10 @@ new class extends Component {
             $this->form = $this->student->form; 
             $this->stream_id = $this->student->stream_id;
             
+            // Get the student details
             $this->studentDetailsId = $this->student->details;
             $this->studentDetails = $this->student->details;
+            // if the student details are found, set the properties
             if ($this->studentDetails) {
                 $this->primary_school = $this->studentDetails->primary_school;
                 $this->kcpe_marks = $this->studentDetails->kcpe_marks;
@@ -61,6 +66,7 @@ new class extends Component {
                 $this->kcpe_position = $this->studentDetails->kcpe_position;
             }
 
+        // Find the exam details for the student    
         $exam = Exam::where('student_id', $this->studentId)->first();
         if ($exam) {
             $this->exam1 = $exam->exam1;
@@ -72,23 +78,27 @@ new class extends Component {
         }
     }
 
+        // Get all the classes, streams and subjects
         $this->classes = ClassForm::all();
         $this->streams = Stream::all();
         $this->subjects = Subject::all();
         $this->subject_id = $this->subjects->first()->id;
     }
 
+    // Method to update the student details
     public function updateStudent(): void
     { 
         $validatedData = $this->validate();
-        $validatedData['form'] = $this->form;
-    
+        // If the student ID is set, update the student details
         if ($this->studentId) {
             $student = Student::find($this->studentId);
             $student->update($validatedData);
             
+            // Find the student details
             $studentDetails = StudentDetail::where('student_id', $this->studentId)->first();
+            // If the student details are found, update the details
             if ($studentDetails) {
+                // empty array to hold the KCPE details
                 $kcpeDetails = [];
                 if ($this->primary_school) {
                     $kcpeDetails['primary_school'] = $this->primary_school;
@@ -102,6 +112,7 @@ new class extends Component {
                 if ($this->kcpe_position) {
                     $kcpeDetails['kcpe_position'] = $this->kcpe_position;
                 }
+                // If the KCPE details are not empty, update the student details
                 if (!empty($kcpeDetails)) {
                     $studentDetails->update($kcpeDetails);
                 }
@@ -109,6 +120,7 @@ new class extends Component {
     
             // Update the Exam model
             Exam::updateOrCreate(
+                // Find the exam details for the student
                 ['id' => $this->examId, 'student_id' => $this->studentId, 'subject_id' => $this->subject_id],
                 [
                     'subject_id' => $this->subject_id,
@@ -121,6 +133,7 @@ new class extends Component {
     
             // If the update was successful, flash a success message
             session()->flash('success', 'Student updated successfully');
+            // Dispatch an event to update the student list
             $this->dispatch('student-updated');
     
         } else {
@@ -128,11 +141,14 @@ new class extends Component {
         }
     }
     
+    // Method to update the exam details
     public function updatedSubjectId()
     {  
+        // If the subject ID is set, get the exam details
         if ($this->subject_id) {
+            // Find the exam details for the student
             $exam = Exam::where('student_id', $this->studentId)->where('subject_id', $this->subject_id)->first();
-
+            // If the exam details are found, set the properties
             if ($exam) {
                 $this->exam1 = $exam->exam1;
                 $this->exam2 = $exam->exam2;
@@ -147,6 +163,7 @@ new class extends Component {
         }
     }
 
+    // Reset the exam fields
     private function resetExamFields()
     {
         $this->exam1 = '';

@@ -86,27 +86,33 @@ new class extends Component {
             ->paginate(10);
     }
 
+    // Open the modal
     public function openModal($id)
     {
         $this->selectedStudentId = $id;
     }
 
+    // Close the modal
     public function closeModal()
     {
         $this->selectedStudentId = null;
     }
 
+    // Edit the student 
     public function edit(Student $student): void
     {
+        // Set the student to be edited
         $this->editing = $student;
+        // Get the students for the selected form
         $this->getStudents();
     }
 
     #[On('student-updated')]
     public function disableEditing()
     {
+        // Set the editing property to null
         $this->editing = null;
-
+        // Get the students for the selected form
         $this->getStudents();
     }
 
@@ -188,6 +194,7 @@ new class extends Component {
                                             <!-- Modal content -->
                                             <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                                                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    {{-- livewire component to edit student --}}
                                                     @livewire('students.edit', ['id' => $student->id])
                                                 </div>
                                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
