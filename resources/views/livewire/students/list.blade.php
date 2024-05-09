@@ -15,7 +15,9 @@ new class extends Component {
     public $searchTerm = '';
     public $sortColumn = 'name';
     public $sortDirection = 'asc';
+    // Hold Student instance to be edited, ? can either hold student instance or null
     public ?Student $editing = null;
+    // Hold the students for the selected form
     public $selectedStudentId = null;
 
     // updateForm is called when the form select is changed

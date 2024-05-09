@@ -141,7 +141,7 @@ new class extends Component {
         }
     }
     
-    // Method to update the exam details
+    // Method to fetch the exam details for the student
     public function updatedSubjectId()
     {  
         // If the subject ID is set, get the exam details
