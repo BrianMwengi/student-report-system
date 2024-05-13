@@ -9,6 +9,6 @@ class ReportCardController extends Controller
 {
     public function index($studentId): View
     {
-        return view('report-card', ['selectedStudentId' => $studentId]);
+        return view('reports', ['selectedStudentId' => $studentId]);
     }
 }
