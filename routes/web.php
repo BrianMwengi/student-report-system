@@ -45,7 +45,7 @@ Route::get('schoolsettings', [SchoolSettingsController::class, 'index'])
         ->middleware(['auth', 'verified'])
         ->name('schoolsettings'); 
 
-Route::get('reports', [ReportCardController::class, 'index'])
+Route::get('/reports/{studentId}', [ReportCardController::class, 'index'])
         ->middleware(['auth', 'verified'])
         ->name('reports'); 
 
