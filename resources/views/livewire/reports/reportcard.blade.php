@@ -3,7 +3,6 @@
 use Livewire\Volt\Component;
 use App\Models\Exam;
 use App\Models\Student;
-use Livewire\Component;
 use App\Models\SchoolSetting;
 
 new class extends Component {
