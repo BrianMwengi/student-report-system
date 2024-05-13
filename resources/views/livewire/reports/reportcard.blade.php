@@ -229,53 +229,6 @@ new class extends Component {
         return $higherScores->count() + 1;
     }
 
-        public function calculateClassPosition($studentId, $totalPoints, $form, $streamId)
-        {
-            if ($this->useStreams) {
-                $students_with_higher_points = Student::where('stream_id', $streamId)
-                    ->where(function ($query) use ($totalPoints) {
-                        $query->selectRaw('SUM(exams.points)')
-                            ->from('exams')
-                            ->whereColumn('students.id', 'exams.student_id')
-                            ->groupBy('exams.student_id')
-                            ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
-                    }, '>', 0)->count();
-            
-                $students_with_same_points = Student::where('stream_id', $streamId)
-                    ->where(function ($query) use ($totalPoints, $studentId) {
-                        $query->selectRaw('SUM(exams.points)')
-                            ->from('exams')
-                            ->whereColumn('students.id', 'exams.student_id')
-                            ->where('exams.student_id', '<', $studentId)
-                            ->groupBy('exams.student_id')
-                            ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
-                    }, '>', 0)->count();
-            } else {
-                $students_with_higher_points = Student::where('form', $form)
-                    ->where(function ($query) use ($totalPoints) {
-                        $query->selectRaw('SUM(exams.points)')
-                            ->from('exams')
-                            ->whereColumn('students.id', 'exams.student_id')
-                            ->groupBy('exams.student_id')
-                            ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
-                    }, '>', 0)->count();
-            
-                $students_with_same_points = Student::where('form', $form)
-                    ->where(function ($query) use ($totalPoints, $studentId) {
-                        $query->selectRaw('SUM(exams.points)')
-                            ->from('exams')
-                            ->whereColumn('students.id', 'exams.student_id')
-                            ->where('exams.student_id', '<', $studentId)
-                            ->groupBy('exams.student_id')
-                            ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
-                    }, '>', 0)->count();
-            }
-
-        $class_position = $students_with_higher_points + $students_with_same_points + 1;
-
-        return $class_position;
-    }
-
         public function calculateStreamPosition($studentId, $totalPoints, $streamId)
         {
             $students_with_higher_points = Student::where('stream_id', $streamId)
@@ -371,7 +324,7 @@ new class extends Component {
             'averageGrade' => $this->averageGrade,
         ];
 
-        if ($this->useStreams) {
+        if {
             $streamPositions = $this->calculateStreamPosition($student->id, $this->totalPoints, $student->stream_id);
             $studentsInStream = Student::where('stream_id', $student->stream_id)->count();
             $viewData['streamPositions'] = $streamPositions;
@@ -379,73 +332,45 @@ new class extends Component {
         } else {
             $classPositions = $this->calculateClassPosition($student->id, $this->totalPoints, $student->form, $student->stream_id);
             $studentsInForm = Student::where('form', $student->form)->count();
-            $viewData['classPositions'] = $classPositions;
-            $viewData['studentsInForm'] = $studentsInForm;
         }
         
         return array_merge($viewData, ['exams' => $this->exams]);
    }
 }; ?>
-
-<div>
-    <div class="container mt-5">
-        <div class="page-break">
+<div class="container mt-5">
+    <div class="page-break">
         <div class="document-wrapper">
-        <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary mb-3" onclick="window.history.back()">Go Back</button>
+            <div class="flex justify-end mb-3">
+                <button class="btn-secondary mb-3" onclick="window.history.back()">Go Back</button>
             </div>
             <button class="print-button" onclick="window.print()">Print this page</button>
-            <!-- <button class="print-pdf" wire:click="downloadPdf">Download PDF</button> -->
-            <div class="header d-flex flex-column flex-lg-row align-items-center">
-            <img class="logo" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '/default-logo.png' }}" alt="School Logo" style="margin-right: 15px;">
+            <div class="header flex flex-col lg:flex-row items-center">
+                <img class="logo" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '' }}" alt="School Logo" style="margin-right: 15px;">
                 @if (isset($error_message))
-                <p>{{ $error_message }}</p>
+                    <p>{{ $error_message }}</p>
                 @else
-                <div class="centered-header-container w-100 text-center">
-                    <h3 class="centered-header">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
-                    <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
+                    <div class="centered-header-container w-100 text-center">
+                        <h3 class="centered-header">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
+                        <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
+                    </div>
                 </div>
-            </div>
         
-                <div class="row">
-                <div class="col">
+                <div class="grid grid-cols-2">
                     <p>Student's Name: {{ $student['name'] }}</p>
-                </div>
-                <div class="col">
                     <p>ADM No. {{ $student['adm_no'] }}</p>
                 </div>
-            </div>
-                <div class="row underline-row">
-                @if (isset($student->stream_id))
-                    <div class="col">
-                        <p>Stream Position on Points: {{ $streamPositions }} out of {{ $studentsInStream }}</p>
-                    </div>
-                @else
-                    <div class="col">
-                        <p>Class Position on Points: {{ $classPositions }} out of {{ $studentsInForm }}</p>
-                    </div>
-                @endif
-                <div class="col">  
+                <div class="grid grid-cols-2 border-t-2 border-black">
+                    <p>Stream Position on Points: {{ $streamPositions }} out of {{ $studentsInStream }}</p>
                     <p>Overall Position on Points: {{ $overallPositions }} out of {{ $totalStudents }}</p>
                 </div>
-            </div>
+                <div class="grid grid-cols-2 primary-details">
+                    <p>Primary School Attended: {{ $student->details['primary_school'] ?? '' }}</p>
+                    <p>Year of KCPE: {{ $student->details['kcpe_year'] ?? '' }}</p>
+                    <p>KCPE MKs: {{ $student->details['kcpe_marks'] ?? '' }}</p>
+                    <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
+                </div>
         
-            <div class="row primary-details">
-            <div class="col-5">
-                <p>Primary School Attended: {{ $student->details['primary_school'] ?? '' }}</p>
-            </div>
-            <div class="col-3">
-                <p>Year of KCPE: {{ $student->details['kcpe_year'] ?? '' }}</p>
-            </div>
-            <div class="col-2">
-                <p>KCPE MKs: {{ $student->details['kcpe_marks'] ?? '' }}</p>
-            </div>
-            <div class="col-2">
-                <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
-            </div>
-        </div>
-        
-            <div class="centered-table table-responsive">
+                <div class="centered-table table-responsive">
                     <table class="bordered-table">
                         <thead>
                             <tr>
@@ -478,32 +403,32 @@ new class extends Component {
                                 </tr>
                                 @endforeach
                                 <tr style="border-top: 2px solid black;">
-                                <td><strong>Total</strong></td>
-                                <td>{{ $totalExam1 }}</td>  <!-- Add this line -->
-                                <td>{{ $totalExam2 }}</td>
-                                <td>{{ $totalExam3 }}</td>
-                                <td class="no-border">{{ $totalAverage }}</td>
-                                <td class="no-border"></td>
-                                <td class="no-border">{{ $totalPoints }}</td>
-                                <td class="no-border"></td>
-                                <td class="no-border"></td>
-                                <td class="no-border"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Average Mark</strong></td>
-                                <td>{{ $averageExam1 }}</td>  <!-- Add this line -->
-                                <td>{{ $averageExam2 }}</td>
-                                <td>{{ $averageExam3 }}</td>
-                                <td class="no-border">{{ $averageTotalAverage }}</td>
-                                <td class="no-border">{{ $averageGrade }}</td>
-                                <td class="no-border"></td>
-                                <td class="no-border"></td>
-                                <td class="no-border"></td>
-                                <td class="no-border"></td>
-                            </tr>
-                            <tr style="border-bottom: 2px solid black;"></tr>
+                                    <td><strong>Total</strong></td>
+                                    <td>{{ $totalExam1 }}</td>  <!-- Add this line -->
+                                    <td>{{ $totalExam2 }}</td>
+                                    <td>{{ $totalExam3 }}</td>
+                                    <td class="no-border">{{ $totalAverage }}</td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border">{{ $totalPoints }}</td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Average Mark</strong></td>
+                                    <td>{{ $averageExam1 }}</td>  <!-- Add this line -->
+                                    <td>{{ $averageExam2 }}</td>
+                                    <td>{{ $averageExam3 }}</td>
+                                    <td class="no-border">{{ $averageTotalAverage }}</td>
+                                    <td class="no-border">{{ $averageGrade }}</td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border"></td>
+                                    <td class="no-border"></td>
+                                </tr>
+                                <tr style="border-bottom: 2px solid black;"></tr>
                             @else
-                            <p>No subjects found for this student.</p>
+                                <p>No subjects found for this student.</p>
                             @endif
                         </tbody>
                     </table>
@@ -511,60 +436,59 @@ new class extends Component {
         
         
                 <div class="below-table-content">
-                <div class="row student-extraco-curricular">
-                <div class="col ">
-                    <h6 class="">Responsibilities</h6>
-                    <textarea readonly class="form-control">{{ $student->activity->responsibilities ?? '' }}</textarea>
-                </div>
-                <div class="col">
-                    <h6>Clubs</h6>
-                    <textarea readonly class="form-control">{{ $student->activity->clubs ?? '' }}</textarea>
-                </div>
-                <div class="col">
-                    <h6>Sports</h6>
-                    <textarea readonly class="form-control">{{ $student->activity->sports ?? '' }}</textarea>
-                </div>
-                <div class="col">
-                    <h6>House Comment</h6>
-                    <textarea readonly class="form-control">{{ $student->activity->house_comment ?? '' }}</textarea>
-                </div>
-            </div>
-        
-            <div class="row mt-3 ">
-                <div class="col-md-6">
-                    <h6>Class Teacher's Comments:</h6>
-                    <hr>
-                    <div class="comment-area">
-                        {{ $student->activity->teacher_comment ?? '' }}
+                    <div class="grid grid-cols-4 student-extraco-curricular">
+                        <div>
+                            <h6 class="">Responsibilities</h6>
+                            <textarea readonly class="form-control">{{ $student->activity->responsibilities ?? '' }}</textarea>
+                        </div>
+                        <div>
+                            <h6>Clubs</h6>
+                            <textarea readonly class="form-control">{{ $student->activity->clubs ?? '' }}</textarea>
+                        </div>
+                        <div>
+                            <h6>Sports</h6>
+                            <textarea readonly class="form-control">{{ $student->activity->sports ?? '' }}</textarea>
+                        </div>
+                        <div>
+                            <h6>House Comment</h6>
+                            <textarea readonly class="form-control">{{ $student->activity->house_comment ?? '' }}</textarea>
+                        </div>
                     </div>
-                </div>
         
-                <div class="col-md-6">
-                    <h6>Principal's Comments:</h6>
-                    <hr>
-                    <div class="comment-area">
-                        {{ $student->activity->principal_comment ?? '' }}
+                    <div class="grid grid-cols-2 mt-3">
+                        <div>
+                            <h6>Class Teacher's Comments:</h6>
+                            <hr>
+                            <div class="comment-area">
+                                {{ $student->activity->teacher_comment ?? '' }}
+                            </div>
+                        </div>
+        
+                        <div>
+                            <h6>Principal's Comments:</h6>
+                            <hr>
+                            <div class="comment-area">
+                                {{ $student->activity->principal_comment ?? '' }}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
         
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h6 class="small-text">School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
-                    <h6 class="small-text">School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
-                </div>
-                <div class="fees">
-                    <h6 class="small-text">Fees Balance:</h6>
-                    <hr>
-                </div>
-                    <div class="date">
-                    <h6 class="small-text">Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
-                    <h6 class="small-text">Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
-                </div>
+                    <div class="flex justify-between mt-5">
+                        <div>
+                            <h6 class="small-text">School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
+                            <h6 class="small-text">School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
+                        </div>
+                        <div class="fees">
+                            <h6 class="small-text">Fees Balance:</h6>
+                            <hr>
+                        </div>
+                        <div class="date">
+                            <h6 class="small-text">Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
+                            <h6 class="small-text">Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
+                        </div>
+                    </div>
+                @endif
             </div>
-            @endif
         </div>
-        </div>
-        </div>
-        </div>        
+    </div>
 </div>
