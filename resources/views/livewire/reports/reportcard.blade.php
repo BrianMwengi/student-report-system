@@ -3,7 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Exam;
 use App\Models\Student;
-use App\Models\SchoolSetting;
+use App\Models\SchoolSettings;
 
 new class extends Component {
     public $student;
@@ -20,7 +20,7 @@ new class extends Component {
     public $averageExam2;
     public $averageExam3;
     public $averageTotalAverage;
-    public $schoolSetting;
+    public $schoolSettings;
     public $responsibilities;
     public $clubs;
     public $sports;
@@ -54,7 +54,7 @@ new class extends Component {
     {
         $this->studentId = $studentId;
     
-        $this->schoolSetting = SchoolSetting::first(); // assuming there is only one row in the school_settings table
+        $this->schoolSettings = SchoolSettings::first(); // assuming there is only one row in the school_settings table
     
         // Get the student record from the database
         $this->student = Student::find($this->studentId);
@@ -72,8 +72,8 @@ new class extends Component {
     
         $averageMark = count($this->exams) ? $this->totalAverage / count($this->exams) : null;
         $this->averageGrade = $averageMark ? $this->calculateGrade($averageMark) : 'N/A';
-        $this->schoolMotto = $this->schoolSetting ? $this->schoolSetting->school_motto : null;
-        $this->schoolVision = $this->schoolSetting ? $this->schoolSetting->school_vision : null;
+        $this->schoolMotto = $this->schoolSettings ? $this->schoolSettings->school_motto : null;
+        $this->schoolVision = $this->schoolSettings ? $this->schoolSettings->school_vision : null;
     }
 
     public function populateData()
@@ -105,8 +105,6 @@ new class extends Component {
         
         $exams = $this->student->exams()->with('subject')->get();
         $this->exams = $this->student->exams;
-        
-        $this->emit('refreshComponent');
         
         $this->totalExam1 = $exams->sum('exam1');
         $this->totalExam2 = $exams->sum('exam2');
@@ -342,12 +340,12 @@ new class extends Component {
         $student = Student::with('exams', 'details')->find($this->studentId);
 
         // Fetch the school setting
-        $this->schoolSetting = SchoolSetting::first();
+        $this->schoolSettings = SchoolSettings::first();
 
         if (!$student) {
             return view('livewire.report-card', [
                 'error_message' => 'No student data found for the given ID',
-                'schoolSetting' => $this->schoolSetting, // Pass the school setting to your view
+                'schoolSettings' => $this->schoolSettings, // Pass the school setting to your view
             ]);
         }
 
@@ -358,9 +356,9 @@ new class extends Component {
             'student' => $student,
             'overallPositions' => $overallPositions,
             'totalStudents' => $totalStudents,
-            'schoolSetting' => $this->schoolSetting, // Pass the school setting to your view
-            'schoolMotto' => $this->schoolSetting ? $this->schoolSetting->school_motto : null, // Add the school motto to the view data
-            'schoolVision' => $this->schoolSetting ? $this->schoolSetting->school_vision : null, // Add the school vision to the view data
+            'schoolSettings' => $this->schoolSettings, // Pass the school setting to your view
+            'schoolMotto' => $this->schoolSettings ? $this->schoolSettings->school_motto : null, // Add the school motto to the view data
+            'schoolVision' => $this->schoolSettings ? $this->schoolSettings->school_vision : null, // Add the school vision to the view data
             'totalExam1' => $this->totalExam1,
             'totalExam2' => $this->totalExam2,
             'totalExam3' => $this->totalExam3,
@@ -385,7 +383,7 @@ new class extends Component {
             $viewData['studentsInForm'] = $studentsInForm;
         }
         
-        return view('livewire.report-card', array_merge($viewData, ['exams' => $this->exams]));
+        return array_merge($viewData, ['exams' => $this->exams]);
    }
 }; ?>
 
@@ -399,13 +397,13 @@ new class extends Component {
             <button class="print-button" onclick="window.print()">Print this page</button>
             <!-- <button class="print-pdf" wire:click="downloadPdf">Download PDF</button> -->
             <div class="header d-flex flex-column flex-lg-row align-items-center">
-            <img class="logo" src="{{ $schoolSetting ? '/storage/' . $schoolSetting->logo_url : '/default-logo.png' }}" alt="School Logo" style="margin-right: 15px;">
+            <img class="logo" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '/default-logo.png' }}" alt="School Logo" style="margin-right: 15px;">
                 @if (isset($error_message))
                 <p>{{ $error_message }}</p>
                 @else
                 <div class="centered-header-container w-100 text-center">
-                    <h3 class="centered-header">{{ $schoolSetting ? $schoolSetting->school_name : 'No School Name' }}</h3>
-                    <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSetting ? $schoolSetting->term : 'N/A' }} {{ $schoolSetting ? $schoolSetting->current_year : 'N/A' }}</h3></u>
+                    <h3 class="centered-header">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
+                    <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
                 </div>
             </div>
         
@@ -552,16 +550,16 @@ new class extends Component {
         
             <div class="d-flex justify-content-between">
                 <div>
-                    <h6 class="small-text">School Motto: {{ $schoolSetting ? $schoolSetting->school_motto : '' }}</h6>
-                    <h6 class="small-text">School Vision: {{ $schoolSetting ? $schoolSetting->school_vision : '' }}</h6>
+                    <h6 class="small-text">School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
+                    <h6 class="small-text">School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
                 </div>
                 <div class="fees">
                     <h6 class="small-text">Fees Balance:</h6>
                     <hr>
                 </div>
                     <div class="date">
-                    <h6 class="small-text">Closing Date: {{ $schoolSetting ? \Carbon\Carbon::parse($schoolSetting->term_end_date)->format('d/m/Y') : '' }}</h6>
-                    <h6 class="small-text">Opening Date: {{ $schoolSetting ? \Carbon\Carbon::parse($schoolSetting->next_term_start_date)->format('d/m/Y') : '' }}</h6>
+                    <h6 class="small-text">Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
+                    <h6 class="small-text">Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
                 </div>
             </div>
             @endif
