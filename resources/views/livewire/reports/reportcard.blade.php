@@ -324,19 +324,15 @@ new class extends Component {
             'averageGrade' => $this->averageGrade,
         ];
 
-        if {
-            $streamPositions = $this->calculateStreamPosition($student->id, $this->totalPoints, $student->stream_id);
-            $studentsInStream = Student::where('stream_id', $student->stream_id)->count();
-            $viewData['streamPositions'] = $streamPositions;
-            $viewData['studentsInStream'] = $studentsInStream;
-        } else {
-            $classPositions = $this->calculateClassPosition($student->id, $this->totalPoints, $student->form, $student->stream_id);
-            $studentsInForm = Student::where('form', $student->form)->count();
-        }
-        
+        $streamPositions = $this->calculateStreamPosition($student->id, $this->totalPoints, $student->stream_id);
+        $studentsInStream = Student::where('stream_id', $student->stream_id)->count();
+        $viewData['streamPositions'] = $streamPositions;
+        $viewData['studentsInStream'] = $studentsInStream;
+
         return array_merge($viewData, ['exams' => $this->exams]);
-   }
-}; ?>
+    }        
+};?>
+
 <div class="container mt-5">
     <div class="page-break">
         <div class="document-wrapper">
