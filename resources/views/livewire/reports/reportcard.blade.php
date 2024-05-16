@@ -296,10 +296,10 @@ new class extends Component {
         $this->schoolSettings = SchoolSettings::first();
 
         if (!$student) {
-            return view('livewire.report-card', [
+            return [
                 'error_message' => 'No student data found for the given ID',
                 'schoolSettings' => $this->schoolSettings, // Pass the school setting to your view
-            ]);
+            ];
         }
 
         $overallPositions = $this->calculateOverallPosition($student->id, $this->totalPoints);
@@ -336,20 +336,21 @@ new class extends Component {
 <div class="container mt-5">
     <div class="page-break">
         <div class="document-wrapper">
-            <div class="flex justify-end mb-3">
-                <button class="btn-secondary mb-3" onclick="window.history.back()">Go Back</button>
+            <div class="flex justify-between mb-3">
+                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mb-3" onclick="window.history.back()">Go Back</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="window.print()">Print this page</button>
             </div>
-            <button class="print-button" onclick="window.print()">Print this page</button>
             <div class="header flex flex-col lg:flex-row items-center">
                 <img class="logo" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '' }}" alt="School Logo" style="margin-right: 15px;">
                 @if (isset($error_message))
                     <p>{{ $error_message }}</p>
                 @else
-                    <div class="centered-header-container w-100 text-center">
+                    <div class="centered-header-container flex-grow w-100 text-center">
                         <h3 class="centered-header">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
                         <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
                     </div>
                 </div>
+                <!-- Rest of your code... -->
         
                 <div class="grid grid-cols-2">
                     <p>Student's Name: {{ $student['name'] }}</p>
@@ -366,36 +367,36 @@ new class extends Component {
                     <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
                 </div>
         
-                <div class="centered-table table-responsive">
-                    <table class="bordered-table">
-                        <thead>
+                <div class="centered-table table-responsive max-w-7xl mx-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th>Subject</th>
-                                <th>Exam1 (30)</th>
-                                <th>Exam2 (30)</th>
-                                <th>Exam3 (70)</th>
-                                <th>Average (100%)</th>
-                                <th>Grade</th>
-                                <th>Points</th>
-                                <th>Position</th>
-                                <th>Remarks</th>
-                                <th>Teacher</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam1 (30)</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam2 (30)</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam3 (70)</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average (100%)</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
+                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @if(!empty($exams))
                                 @foreach ($exams as $exam)
                                 <tr>
-                                    <td>{{ $exam->subject->name }}</td>
-                                    <td>{{ $exam->exam1 }}</td>
-                                    <td>{{ $exam->exam2 }}</td>
-                                    <td>{{ $exam->exam3 }}</td>
-                                    <td>{{ $exam->average }}</td>
-                                    <td>{{ $exam->grade }}</td>
-                                    <td>{{ $exam->points }}</td>
-                                    <td>{{ $exam->position }}</td>
-                                    <td>{{ $exam->remarks }}</td>
-                                    <td>{{ $exam->teacher }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->subject->name }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam1 }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam2 }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam3 }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->average }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->grade }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->points }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->position }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->remarks }}</td>
+                                    <td class="px-3 whitespace-nowrap">{{ $exam->teacher }}</td>
                                 </tr>
                                 @endforeach
                                 <tr style="border-top: 2px solid black;">
@@ -469,18 +470,18 @@ new class extends Component {
                         </div>
                     </div>
         
-                    <div class="flex justify-between mt-5">
+                    <div class="flex justify-between mt-5 text-sm text-gray-600">
                         <div>
-                            <h6 class="small-text">School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
-                            <h6 class="small-text">School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
+                            <h6>School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
+                            <h6>School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
                         </div>
                         <div class="fees">
-                            <h6 class="small-text">Fees Balance:</h6>
-                            <hr>
+                            <h6>Fees Balance:</h6>
+                            <hr class="border-gray-300">
                         </div>
                         <div class="date">
-                            <h6 class="small-text">Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
-                            <h6 class="small-text">Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
+                            <h6>Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
+                            <h6>Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
                         </div>
                     </div>
                 @endif

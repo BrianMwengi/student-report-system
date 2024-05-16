@@ -117,7 +117,7 @@ new class extends Component {
             </div>
     
             <div class="mb-3">
-                <input type="text" class="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" wire:model="teacher" placeholder="Teacher" required>
+                <input type="text" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" wire:model="teacher" placeholder="Teacher" required>
                 @error('teacher') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
             </div>
     
