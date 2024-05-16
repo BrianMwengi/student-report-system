@@ -141,7 +141,7 @@ new class extends Component {
         <div class="flex justify-between items-center mb-3">
             <div class="col-auto">
                 <label for="form" class="block text-sm font-medium text-gray-700">Select Form:</label>
-                <select wire:model.live="form" id="form" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
+                <select wire:model.change="form" id="form" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:border-blue-300">
                     <option value="1">Form 1</option>
                     <option value="2">Form 2</option>
                     <option value="3">Form 3</option>
