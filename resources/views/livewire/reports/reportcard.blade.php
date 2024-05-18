@@ -30,8 +30,6 @@ new class extends Component {
     public $studentActivity;
     public $schoolMotto;
     public $schoolVision;
-    // public $useStreams = false;
-
 
     public function refreshData()
     {
@@ -39,37 +37,26 @@ new class extends Component {
         $this->render();
     }
 
-    // public function downloadPdf()
-    // { 
-    //     $view = $this->render()->render();
-    //     $pdfContent = PDF::loadHTML($view)->setPaper('a4', 'portrait')->output();
-    //     ob_end_clean(); // Add this line
-    //     return response()->streamDownload(
-    //         fn () => print($pdfContent),
-    //         $this->student->name . '.pdf'
-    //     );
-    // }
-    
     public function mount($studentId)
     {
         $this->studentId = $studentId;
-    
+
         $this->schoolSettings = SchoolSettings::first(); // assuming there is only one row in the school_settings table
-    
+
         // Get the student record from the database
         $this->student = Student::find($this->studentId);
         if (!$this->student) {
-           return;
+            return;
         }
-    
-       // Fetch the student activity data
+
+        // Fetch the student activity data
         $this->studentActivity = $this->student->activity;
-    
+
         // Populate the component state with the fetched data
         $this->populateData();
             
         $this->updateExamData();
-    
+
         $averageMark = count($this->exams) ? $this->totalAverage / count($this->exams) : null;
         $this->averageGrade = $averageMark ? $this->calculateGrade($averageMark) : 'N/A';
         $this->schoolMotto = $this->schoolSettings ? $this->schoolSettings->school_motto : null;
@@ -94,7 +81,7 @@ new class extends Component {
             $this->principalComment = 'N/A';
         }
     }
-    
+
     public function updateExamData()
     {
         $this->student = Student::find($this->studentId);
@@ -104,7 +91,7 @@ new class extends Component {
         }            
         
         $exams = $this->student->exams()->with('subject')->get();
-        $this->exams = $this->student->exams;
+        $this->exams = $this->student->exams;        
         
         $this->totalExam1 = $exams->sum('exam1');
         $this->totalExam2 = $exams->sum('exam2');
@@ -194,7 +181,7 @@ new class extends Component {
     }
 
     public function generateRemarks($grade)
-    {    
+    {  
         $gradeToRemarkMapping = [
             'A' => 'Excellent!',
             'A-' => 'Very good',
@@ -330,162 +317,183 @@ new class extends Component {
         $viewData['studentsInStream'] = $studentsInStream;
 
         return array_merge($viewData, ['exams' => $this->exams]);
-    }        
+    }
 };?>
 
-<div class="container mt-5">
+<div class="container mx-auto max-w-4xl mt-5">
     <div class="page-break">
         <div class="document-wrapper">
-            <div class="flex justify-between mb-3">
-                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mb-3" onclick="window.history.back()">Go Back</button>
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="window.print()">Print this page</button>
+            <div class="flex justify-end">
+                <button class="bg-gray-400 text-white px-2 py-2 mb-3" onclick="window.history.back()">Go Back</button>
+                <button class="bg-blue-500 text-white px-2 py-2 mb-3 ml-2" onclick="window.print()">Print this page</button>
             </div>
-            <div class="header flex flex-col lg:flex-row items-center">
-                <img class="logo" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '' }}" alt="School Logo" style="margin-right: 15px;">
+            <div class="header flex flex-col items-center">
+                <img class="logo mb-4" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '/default-logo.png' }}" alt="School Logo">
                 @if (isset($error_message))
                     <p>{{ $error_message }}</p>
                 @else
-                    <div class="centered-header-container flex-grow w-100 text-center">
-                        <h3 class="centered-header">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
-                        <u><h3 class="centered-header">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
-                    </div>
-                </div>
-                <!-- Rest of your code... -->
-        
-                <div class="grid grid-cols-2">
-                    <p>Student's Name: {{ $student['name'] }}</p>
-                    <p>ADM No. {{ $student['adm_no'] }}</p>
-                </div>
-                <div class="grid grid-cols-2 border-t-2 border-black">
-                    <p>Stream Position on Points: {{ $streamPositions }} out of {{ $studentsInStream }}</p>
-                    <p>Overall Position on Points: {{ $overallPositions }} out of {{ $totalStudents }}</p>
-                </div>
-                <div class="grid grid-cols-2 primary-details">
-                    <p>Primary School Attended: {{ $student->details['primary_school'] ?? '' }}</p>
-                    <p>Year of KCPE: {{ $student->details['kcpe_year'] ?? '' }}</p>
-                    <p>KCPE MKs: {{ $student->details['kcpe_marks'] ?? '' }}</p>
-                    <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
-                </div>
-        
-                <div class="centered-table table-responsive max-w-7xl mx-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam1 (30)</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam2 (30)</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam3 (70)</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average (100%)</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
-                                <th class="px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @if(!empty($exams))
-                                @foreach ($exams as $exam)
-                                <tr>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->subject->name }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam1 }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam2 }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->exam3 }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->average }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->grade }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->points }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->position }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->remarks }}</td>
-                                    <td class="px-3 whitespace-nowrap">{{ $exam->teacher }}</td>
-                                </tr>
-                                @endforeach
-                                <tr style="border-top: 2px solid black;">
-                                    <td><strong>Total</strong></td>
-                                    <td>{{ $totalExam1 }}</td>  <!-- Add this line -->
-                                    <td>{{ $totalExam2 }}</td>
-                                    <td>{{ $totalExam3 }}</td>
-                                    <td class="no-border">{{ $totalAverage }}</td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border">{{ $totalPoints }}</td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Average Mark</strong></td>
-                                    <td>{{ $averageExam1 }}</td>  <!-- Add this line -->
-                                    <td>{{ $averageExam2 }}</td>
-                                    <td>{{ $averageExam3 }}</td>
-                                    <td class="no-border">{{ $averageTotalAverage }}</td>
-                                    <td class="no-border">{{ $averageGrade }}</td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border"></td>
-                                    <td class="no-border"></td>
-                                </tr>
-                                <tr style="border-bottom: 2px solid black;"></tr>
-                            @else
-                                <p>No subjects found for this student.</p>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-        
-        
-                <div class="below-table-content">
-                    <div class="grid grid-cols-4 student-extraco-curricular">
-                        <div>
-                            <h6 class="">Responsibilities</h6>
-                            <textarea readonly class="form-control">{{ $student->activity->responsibilities ?? '' }}</textarea>
-                        </div>
-                        <div>
-                            <h6>Clubs</h6>
-                            <textarea readonly class="form-control">{{ $student->activity->clubs ?? '' }}</textarea>
-                        </div>
-                        <div>
-                            <h6>Sports</h6>
-                            <textarea readonly class="form-control">{{ $student->activity->sports ?? '' }}</textarea>
-                        </div>
-                        <div>
-                            <h6>House Comment</h6>
-                            <textarea readonly class="form-control">{{ $student->activity->house_comment ?? '' }}</textarea>
-                        </div>
-                    </div>
-        
-                    <div class="grid grid-cols-2 mt-3">
-                        <div>
-                            <h6>Class Teacher's Comments:</h6>
-                            <hr>
-                            <div class="comment-area">
-                                {{ $student->activity->teacher_comment ?? '' }}
-                            </div>
-                        </div>
-        
-                        <div>
-                            <h6>Principal's Comments:</h6>
-                            <hr>
-                            <div class="comment-area">
-                                {{ $student->activity->principal_comment ?? '' }}
-                            </div>
-                        </div>
-                    </div>
-        
-                    <div class="flex justify-between mt-5 text-sm text-gray-600">
-                        <div>
-                            <h6>School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
-                            <h6>School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
-                        </div>
-                        <div class="fees">
-                            <h6>Fees Balance:</h6>
-                            <hr class="border-gray-300">
-                        </div>
-                        <div class="date">
-                            <h6>Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
-                            <h6>Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
-                        </div>
+                    <div class="centered-header-container w-full text-center">
+                        <h3 class="centered-header text-xl">{{ $schoolSettings ? $schoolSettings->school_name : 'No School Name' }}</h3>
+                        <u><h3 class="centered-header text-xl">REPORT FORM FOR TERM {{ $schoolSettings ? $schoolSettings->term : 'N/A' }} {{ $schoolSettings ? $schoolSettings->current_year : 'N/A' }}</h3></u>
                     </div>
                 @endif
             </div>
+  
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p>Student's Name: {{ $student['name'] }}</p>
+          </div>
+          <div>
+            <p>ADM No. {{ $student['adm_no'] }}</p>
+          </div>
         </div>
+        <div class="grid grid-cols-2 border-b border-gray-400 pb-2">
+          @if (isset($student->stream_id))
+            <div>
+              <p>Stream Position on Points: {{ $streamPositions }} out of {{ $studentsInStream }}</p>
+            </div>
+          @else
+            <div>
+              <p>Class Position on Points: {{ $classPositions }} out of {{ $studentsInForm }}</p>
+            </div>
+          @endif
+          <div>
+            <p>Overall Position on Points: {{ $overallPositions }} out of {{ $totalStudents }}</p>
+          </div>
+        </div>
+  
+        <div class="grid grid-cols-4 gap-4 primary-details">
+            <div class="col-span-2">
+                <p>Primary School Attended: {{ $student->details['primary_school'] ?? '' }}</p>
+            </div>
+            <div>
+                <p>Year of KCPE: {{ $student->details['kcpe_year'] ?? '' }}</p>
+            </div>
+            <div>
+                <p>KCPE MKs: {{ $student->details['kcpe_marks'] ?? '' }}</p>
+            </div>
+            <div>
+                <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
+            </div>
+        </div>
+  
+        <div class="centered-table table-responsive">
+          <table class="w-full border border-gray-400">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="border border-gray-400 px-2 py-2">Subject</th>
+                <th class="border border-gray-400 px-2 py-2">Exam1 (30)</th>
+                <th class="border border-gray-400 px-2 py-2">Exam2 (30)</th>
+                <th class="border border-gray-400 px-2 py-2">Exam3 (70)</th>
+                <th class="border border-gray-400 px-2 py-2">Average (100%)</th>
+                <th class="border border-gray-400 px-2 py-2">Grade</th>
+                <th class="border border-gray-400 px-2 py-2">Points</th>
+                <th class="border border-gray-400 px-2 py-2">Position</th>
+                <th class="border border-gray-400 px-2 py-2">Remarks</th>
+                <th class="border border-gray-400 px-2 py-2">Teacher</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if(!empty($exams))
+                @foreach ($exams as $exam)
+                  <tr>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->subject->name }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->exam1 }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->exam2 }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->exam3 }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->average }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->grade }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->points }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->position }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->remarks }}</td>
+                    <td class="border border-gray-400 px-2 py-2">{{ $exam->teacher }}</td>
+                  </tr>
+                @endforeach
+                <tr class="border-b border-gray-400">
+                  <td class="border border-gray-400 px-2 py-2"><strong>Total</strong></td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $totalExam1 }}</td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $totalExam2 }}</td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $totalExam3 }}</td>
+                  <td class="px-2 py-2">{{ $totalAverage }}</td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2">{{ $totalPoints }}</td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2"></td>
+                </tr>
+                <tr>
+                  <td class="border border-gray-400 px-2 py-2"><strong>Average Mark</strong></td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $averageExam1 }}</td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $averageExam2 }}</td>
+                  <td class="border border-gray-400 px-2 py-2">{{ $averageExam3 }}</td>
+                  <td class="px-2 py-2">{{ $averageTotalAverage }}</td>
+                  <td class="px-2 py-2">{{ $averageGrade }}</td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2"></td>
+                  <td class="px-2 py-2"></td>
+                </tr>
+                <tr class="border-b border-gray-400"></tr>
+              @else
+                <p>No subjects found for this student.</p>
+              @endif
+            </tbody>
+          </table>
+        </div>
+  
+        <div class="below-table-content">
+            <div class="grid grid-cols-4 gap-2 student-extraco-curricular">
+                <div>
+                    <h6 class="">Responsibilities</h6>
+                    <textarea readonly class="w-full p-2 border rounded">{{ $student->activity->responsibilities ?? '' }}</textarea>
+                </div>
+                <div>
+                    <h6>Clubs</h6>
+                    <textarea readonly class="w-full p-2 border rounded">{{ $student->activity->clubs ?? '' }}</textarea>
+                </div>
+                <div>
+                    <h6>Sports</h6>
+                    <textarea readonly class="w-full p-2 border rounded">{{ $student->activity->sports ?? '' }}</textarea>
+                </div>
+                <div>
+                    <h6>House Comment</h6>
+                    <textarea readonly class="w-full p-2 border rounded">{{ $student->activity->house_comment ?? '' }}</textarea>
+                </div>
+            </div>
+        </div>      
+        
+        <div class="grid grid-cols-2 gap-4 mt-3">
+            <div>
+              <h6>Class Teacher's Comments:</h6>
+              <hr>
+              <div class="comment-area">
+                {{ $student->activity->teacher_comment ?? '' }}
+              </div>
+            </div>
+            <div>
+              <h6>Principal's Comments:</h6>
+              <hr>
+              <div class="comment-area">
+                {{ $student->activity->principal_comment ?? '' }}
+              </div>
+            </div>
+          </div>
+  
+          <div class="flex justify-between">
+            <div>
+              <h6 class="text-sm">School Motto: {{ $schoolSettings ? $schoolSettings->school_motto : '' }}</h6>
+              <h6 class="text-sm">School Vision: {{ $schoolSettings ? $schoolSettings->school_vision : '' }}</h6>
+            </div>
+            <div class="fees">
+              <h6 class="text-sm">Fees Balance:</h6>
+              <hr>
+            </div>
+            <div class="date">
+              <h6 class="text-sm">Closing Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->term_end_date)->format('d/m/Y') : '' }}</h6>
+              <h6 class="text-sm">Opening Date: {{ $schoolSettings ? \Carbon\Carbon::parse($schoolSettings->next_term_start_date)->format('d/m/Y') : '' }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
