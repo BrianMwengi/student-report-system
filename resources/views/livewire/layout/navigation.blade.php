@@ -29,8 +29,8 @@ new class extends Component
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex dashboard-link">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
@@ -57,7 +57,7 @@ new class extends Component
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <button wire:click="logout" class="w-full text-start">
+                        <button wire:click="logout" class="w-full text-start logout-link">
                             <x-dropdown-link>
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -99,7 +99,7 @@ new class extends Component
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                <button wire:click="logout" class="w-full text-start">
+                <button wire:click="logout" class="w-full text-start" class="logout-link">
                     <x-responsive-nav-link>
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

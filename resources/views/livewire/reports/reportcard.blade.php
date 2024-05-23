@@ -378,7 +378,7 @@ new class extends Component {
         </div>
   
         <div class="centered-table table-responsive">
-          <table class="w-full border border-gray-400">
+          <table class="w-full border border-gray-400 bordered-table">
             <thead>
               <tr class="bg-gray-200">
                 <th class="border border-gray-400 px-2 py-2">Subject</th>
