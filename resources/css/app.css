@@ -6,9 +6,13 @@
 @media print {
     .print-button,
     .go-back-button,
-    .dashboard-link,
-    .logout-link {
+    .navigation-bar {
         display: none;
+    }
+
+    /* Remove all box shadows */
+    * {
+        box-shadow: none !important;
     }
     body {
         font-size: 10pt;
@@ -74,7 +78,7 @@
 }
 
 .comment-area {
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
     height: 60px;
     align-items: center;
     justify-content: center;
@@ -82,7 +86,7 @@
 
 .fees {
     height: 90px;
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
 }
 
 .document-wrapper {
@@ -93,7 +97,7 @@
 .centered-table {
     /* display: flex;  */
     justify-content: center;
-    border: 3px solid black; /* Main border here */
+    border: 2px solid black; /* Main border here */
     box-sizing: border-box;
 }
 
@@ -115,9 +119,9 @@ table.bordered-table {
 }
 
 .below-table-content {
-    border-left: 3px solid black;
-    border-right: 3px solid black;
-    border-bottom: 3px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
     padding: 0px 20px 20px 20px; /* No top padding */
     margin-top: 0; /* No top margin */
     box-sizing: border-box;
