@@ -320,12 +320,12 @@ new class extends Component {
     }
 };?>
 
-<div class="container mx-auto max-w-4xl mt-5">
+<div class="container mx-auto max-w-5xl mt-5">
     <div class="page-break">
         <div class="document-wrapper">
             <div class="flex justify-end">
-                <button class="bg-gray-400 text-white px-2 py-2 mb-3" onclick="window.history.back()">Go Back</button>
-                <button class="bg-blue-500 text-white px-2 py-2 mb-3 ml-2" onclick="window.print()">Print this page</button>
+                <button class="bg-gray-400 text-white px-2 py-2 mb-3 go-back go-back-button" onclick="window.history.back()">Go Back</button>
+                <button class="bg-blue-500 text-white px-2 py-2 mb-3 ml-2 print-button" onclick="window.print()">Print this page</button>
             </div>
             <div class="header flex flex-col items-center">
                 <img class="logo mb-4" src="{{ $schoolSettings ? '/storage/' . $schoolSettings->logo_url : '/default-logo.png' }}" alt="School Logo">

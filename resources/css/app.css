@@ -3,3 +3,77 @@
 @tailwind utilities;
 
 
+@media print {
+    .print-button,
+    .go-back-button {
+        display: none;
+    }
+    body {
+        font-size: 10pt;
+        width: 100%;
+        position: relative;
+        bottom: 6%;
+        box-sizing: border-box;
+    }
+    .comment-area {
+        position: relative;
+        bottom: 17px;
+        height: 30px;
+      }
+  
+    
+  
+      hr {
+          margin-top: 8px;
+      }
+  
+      .fees {
+          height: 70px;
+      }
+  
+      .date {
+          padding-left: 10px;
+      }
+  
+      .small-text {
+         position: relative;
+         bottom: 19%;
+      }
+      
+      img {
+          max-width: 100%; /* Prevent large images from breaking layout */
+      }
+  
+      /* Remove unnecessary elements from print */
+      .sb-topnav, .sidebar, .navbar-brand, .digital-only, .print-button, .btn-secondary, .print-pdf {
+          display: none;
+      }
+  
+      footer {
+          display: none;
+      }
+  
+      /* Set elements to 100% width */
+      .content, .main {
+          width: 100%;
+          margin: 0;
+          float: none;
+      }
+  
+      /* Set margins for printing */
+      @page {
+          margin: 1cm;
+      }
+  
+      .below-table-content {
+          font-size: 1em; /* Adjust as needed */
+          padding: 0.15em; /* Adjust as needed */
+          margin: 0.01em; /* Adjust as needed */
+      }
+      .below-table-content .grid {
+          margin-bottom: 0.1em; /* Adjust as needed */
+      }
+      .below-table-content textarea {
+          padding: 0.25em; /* Adjust as needed */
+      }  
+    }
