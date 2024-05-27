@@ -15,10 +15,10 @@
         box-shadow: none !important;
     }
     body {
-        font-size: 10pt;
+        font-size: 9pt; /* Reduce the font size */
         width: 100%;
         position: relative;
-        bottom: 6%;
+        bottom: 0; /* Set bottom to 0 */
         box-sizing: border-box;
     }
     .comment-area {
@@ -57,7 +57,7 @@
   
       /* Set margins for printing */
       @page {
-          margin: 1cm;
+          margin: 0.5cm;
       }
   
       .below-table-content {
