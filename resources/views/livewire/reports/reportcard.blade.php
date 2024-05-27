@@ -102,10 +102,10 @@ new class extends Component {
         $examCount = count($this->exams);
         
         if ($examCount > 0) {
-            $this->averageExam1 = $this->totalExam1 / $examCount;
-            $this->averageExam2 = $this->totalExam2 / $examCount;
-            $this->averageExam3 = $this->totalExam3 / $examCount;
-            $this->averageTotalAverage = $this->totalAverage / $examCount;
+            $this->averageExam1 = round($this->totalExam1 / $examCount, 2);
+            $this->averageExam2 = round($this->totalExam2 / $examCount, 2);
+            $this->averageExam3 = round($this->totalExam3 / $examCount, 2);
+            $this->averageTotalAverage = round($this->totalAverage / $examCount, 2);
             $this->averageGrade = $this->calculateGrade($this->averageTotalAverage);
         } else {
             $this->averageExam1 = 'N/A';
@@ -114,7 +114,7 @@ new class extends Component {
             $this->averageTotalAverage = 'N/A';
             $this->averageGrade = 'N/A';
         }
-        
+            
         $this->useStreams = isset($this->student->stream_id);
 
         foreach ($exams as $exam) {

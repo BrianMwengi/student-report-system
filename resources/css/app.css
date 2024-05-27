@@ -73,6 +73,17 @@
       }  
     }
 
+.logo {
+    /* Adjust as needed to control the size of the logo */
+    width: 60px;
+    height: auto;
+}
+
+.student-extraco-curricular {
+    position: relative;
+    top: 8px;
+}
+    
 .centered-header {
     text-align: center;
 }
@@ -101,7 +112,6 @@
     box-sizing: border-box;
 }
 
-
 .bordered-table {
     width: 100%;
     border-collapse: collapse;
@@ -126,4 +136,12 @@ table.bordered-table {
     margin-top: 0; /* No top margin */
     box-sizing: border-box;
 }
+
+@media (max-width: 600px) {
+    .bordered-table th, .bordered-table td {
+        font-size: 0.8em; /* Adjust as needed */
+        padding: 3px; /* Adjust as needed */
+    }
+}
+
 
