@@ -10,6 +10,10 @@
         display: none;
     }
 
+    .container {
+        margin-top: 0 !important; /* Remove top margin */
+    }
+
     /* Remove all box shadows */
     * {
         box-shadow: none !important;
@@ -70,13 +74,15 @@
       }
       .below-table-content textarea {
           padding: 0.25em; /* Adjust as needed */
-      }  
-    }
+      } 
+}
 
 .logo {
     /* Adjust as needed to control the size of the logo */
     width: 60px;
-    height: auto;
+    height: 40px;
+    position: relative;
+    top: -5px; /* Adjust this value as needed */
 }
 
 .student-extraco-curricular {

@@ -320,7 +320,7 @@ new class extends Component {
     }
 };?>
 
-<div class="container mx-auto max-w-5xl mt-5">
+<div class="container mx-auto max-w-5xl">
     <div class="page-break">
         <div class="document-wrapper">
             <div class="flex justify-end">
