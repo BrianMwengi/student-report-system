@@ -26,10 +26,10 @@
         box-sizing: border-box;
     }
     .comment-area {
-        position: relative;
-        bottom: 17px;
-        height: 30px;
-      }
+        height: 10px;
+        align-items: center;
+        justify-content: center;
+    }
   
       hr {
           margin-top: 8px;
