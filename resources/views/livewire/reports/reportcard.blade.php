@@ -362,17 +362,17 @@ new class extends Component {
           </div>
         </div>
   
-        <div class="grid grid-cols-4 gap-4 primary-details">
+        <div class="grid grid-cols-5 gap-4 primary-details mt-3">
             <div class="col-span-2">
                 <p>Primary School Attended: {{ $student->details['primary_school'] ?? '' }}</p>
             </div>
-            <div>
+            <div class="col-span-1">
                 <p>Year of KCPE: {{ $student->details['kcpe_year'] ?? '' }}</p>
             </div>
-            <div>
+            <div class="col-span-1">
                 <p>KCPE MKs: {{ $student->details['kcpe_marks'] ?? '' }}</p>
             </div>
-            <div>
+            <div class="col-span-1">
                 <p>Pos on KCPE: {{ $student->details['kcpe_position'] ?? '' }}</p>
             </div>
         </div>
