@@ -20,17 +20,24 @@ new class extends Component {
     // Hold the students for the selected form
     public $selectedStudentId = null;
 
-    // updateForm is called when the form select is changed
-    public function updatedForm($value)
+    public function mount()
     {
-       // Save the selected form to the session
-        session()->put('students_list_form', $value);
-        // Reset the page to 1
-        $this->resetPage();
+        // Get the form number from the session
+        $this->form = session()->get('students_list_form', 1);
+
         // Get the students for the selected form
-        $this->students = $this->getStudents();
+        $this->getStudents();
     }
 
+    // updateForm is called when the form select is changed
+    public function updatedForm()
+    {
+        // Store the selected form number in the session
+        session()->put('students_list_form', $this->form);
+
+        // Get the students for the selected form
+        $this->getStudents();
+    }
 
     // Sort the students by the selected column
     public function sortBy($column)
@@ -116,15 +123,6 @@ new class extends Component {
         $this->editing = null;
         // Get the students for the selected form
         $this->getStudents();
-    }
-
-    // State method to persist the form selection
-    public function state(): array
-    {
-        return [
-            // Get the form from the session
-            'form' => session()->get('students_list_form', 1),
-        ];
     }
 
     // Return the students and the form
