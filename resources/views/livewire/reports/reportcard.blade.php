@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\SchoolSettings;
 
 new class extends Component {
+    // Public properties
     public $student;
     public $studentId;
     public $totalExam1;
@@ -31,20 +32,18 @@ new class extends Component {
     public $schoolMotto;
     public $schoolVision;
 
-    public function refreshData()
-    {
-        $this->updateExamData();
-        $this->render();
-    }
 
+    // Mount the component
     public function mount($studentId)
     {
+        // Fetch the student ID
         $this->studentId = $studentId;
-
+        // Fetch the school setting
         $this->schoolSettings = SchoolSettings::first(); // assuming there is only one row in the school_settings table
 
         // Get the student record from the database
         $this->student = Student::find($this->studentId);
+        // if the student record is not found, return
         if (!$this->student) {
             return;
         }
@@ -54,18 +53,40 @@ new class extends Component {
 
         // Populate the component state with the fetched data
         $this->populateData();
-            
+        // Update the exam data     
         $this->updateExamData();
 
-        $averageMark = count($this->exams) ? $this->totalAverage / count($this->exams) : null;
-        $this->averageGrade = $averageMark ? $this->calculateGrade($averageMark) : 'N/A';
-        $this->schoolMotto = $this->schoolSettings ? $this->schoolSettings->school_motto : null;
-        $this->schoolVision = $this->schoolSettings ? $this->schoolSettings->school_vision : null;
+        // if the student has exams, calculate the average mark
+        if (count($this->exams) > 0) {
+            $averageMark = $this->totalAverage / count($this->exams);
+        } else {
+            $averageMark = null;
+        }
+
+        // if the average mark is not null, calculate the average grade
+        if ($averageMark !== null) {
+            $this->averageGrade = $this->calculateGrade($averageMark);
+        } else {
+            $this->averageGrade = 'N/A';
+        }
+
+        // if school settings are available, set the school motto and vision
+        if ($this->schoolSettings) {
+            $this->schoolMotto = $this->schoolSettings->school_motto;
+            $this->schoolVision = $this->schoolSettings->school_vision;
+        } else {
+            $this->schoolMotto = null;
+            $this->schoolVision = null;
+        }
+
     }
 
+    // Populate the component state with the fetched data
     public function populateData()
     {
+        // Check if student and student activity exist
         if ($this->student && $this->student->activity) {
+            // Populate activity-related data
             $this->responsibilities = $this->studentActivity->responsibilities;
             $this->clubs = $this->studentActivity->clubs;
             $this->sports = $this->studentActivity->sports;
@@ -73,6 +94,7 @@ new class extends Component {
             $this->teacherComment = $this->studentActivity->teacher_comment;
             $this->principalComment = $this->studentActivity->principal_comment;
         } else {
+            // Set default values when no activity data is found
             $this->responsibilities = 'N/A';
             $this->clubs = 'N/A';
             $this->sports = 'N/A';
@@ -84,23 +106,28 @@ new class extends Component {
 
     public function updateExamData()
     {
+        // Find student by ID
         $this->student = Student::find($this->studentId);
 
+        // If student not found, return early
         if (!$this->student) {
             return;
         }            
-        
+
+        // Retrieve exams with associated subjects
         $exams = $this->student->exams()->with('subject')->get();
         $this->exams = $this->student->exams;        
-        
+
+        // Calculate total scores for exams
         $this->totalExam1 = $exams->sum('exam1');
         $this->totalExam2 = $exams->sum('exam2');
         $this->totalExam3 = $exams->sum('exam3');
         $this->totalAverage = $exams->sum('average');
         $this->totalPoints = $exams->sum('points');
-        
+
         $examCount = count($this->exams);
-        
+
+        // Calculate average scores if exams exist
         if ($examCount > 0) {
             $this->averageExam1 = round($this->totalExam1 / $examCount, 2);
             $this->averageExam2 = round($this->totalExam2 / $examCount, 2);
@@ -108,34 +135,48 @@ new class extends Component {
             $this->averageTotalAverage = round($this->totalAverage / $examCount, 2);
             $this->averageGrade = $this->calculateGrade($this->averageTotalAverage);
         } else {
+            // Set default values when no exams are found
             $this->averageExam1 = 'N/A';
             $this->averageExam2 = 'N/A';
             $this->averageExam3 = 'N/A';
             $this->averageTotalAverage = 'N/A';
             $this->averageGrade = 'N/A';
         }
-            
+        // Check if student is assigned to a stream
         $this->useStreams = isset($this->student->stream_id);
 
+        // If the student doesn't have a stream, show an error message
+        if (!$this->useStreams) {
+            session()->flash('error', 'The student is not assigned to a stream.');
+        }
+
+        // Calculate details for each exam
         foreach ($exams as $exam) {
             // Apply the same formula as in handle() method
             $averageCATs = ($exam->exam1 + $exam->exam2) / 2;
             $catScore = ($averageCATs / 30) * 30;
             $finalExamScore = ($exam->exam3 / 70) * 70;
             $average = $catScore + $finalExamScore;
-            
+
+            // Round the average score
             $exam->average = round($average);
+            // Calculate grade, points, position, and remarks
             $exam->grade = $this->calculateGrade($exam->average);
+            // Get points for the grade based on the grade
             $exam->points = $this->calculatePoints($exam->grade);
+            // To get student subject position, pass the student's form, average score, and stream ID
             $exam->position = $this->calculateSubjectPosition($exam->subject_id, $exam->average, $this->student->form, $this->student->stream_id);
+            // Generate remarks based on the grade
             $exam->remarks = $this->generateRemarks($exam->grade);
 
+            // Save the updated exam details
             $exam->save();
         }
     }
 
     public function calculateGrade($average)
     {
+        // Determine grade based on average score
         if ($average >= 80) {
             return 'A';
         } elseif ($average >= 75) {
@@ -163,6 +204,7 @@ new class extends Component {
 
     public function calculatePoints($grade)
     {
+        // Map grades to points
         $gradeToPointMapping = [
             'A' => 12,
             'A-' => 11,
@@ -177,11 +219,13 @@ new class extends Component {
             'E' => 2,
         ];
 
+        // Return the corresponding points for the grade, or 0 if not found
         return $gradeToPointMapping[$grade] ?? 0;
     }
 
     public function generateRemarks($grade)
-    {  
+    {
+        // Map grades to remarks
         $gradeToRemarkMapping = [
             'A' => 'Excellent!',
             'A-' => 'Very good',
@@ -196,61 +240,34 @@ new class extends Component {
             'E' => 'Poor',
         ];
 
+        // Return the corresponding remark for the grade, or an empty string if not found
         return $gradeToRemarkMapping[$grade] ?? '';
     }
 
-    public function calculateSubjectPosition($subjectId, $average, $form, $streamId = null)
+    public function calculateSubjectPosition($subjectId, $average, $form, $streamId)
     {
+        // Retrieve exams for the given subject, form, and stream
         $studentsExams = Exam::where('subject_id', $subjectId)
+        // Retrieve students with the given form and stream e.g. form 1, stream 1
             ->whereHas('student', function ($query) use ($form, $streamId) {
-                $query->where('form', $form);
-                if ($streamId) {
-                    $query->where('stream_id', $streamId);
-                }
+                $query->where('form', $form)
+                      ->where('stream_id', $streamId);
             })->get();
-
+    
+        // Count students with higher average scores e.g. average > 70 then count 
         $higherScores = $studentsExams->filter(function ($exam) use ($average) {
+            // return true if the average score is higher than the given average e.g. 70
             return $exam->average > $average;
         });
-
+    
+        // Position is the count of higher scores plus one e.g. 3 higher scores + 1 = 4
         return $higherScores->count() + 1;
     }
 
-        public function calculateStreamPosition($studentId, $totalPoints, $streamId)
-        {
-            $students_with_higher_points = Student::where('stream_id', $streamId)
-                ->where(function ($query) use ($totalPoints) {
-                    $query->selectRaw('SUM(exams.points)')
-                        ->from('exams')
-                        ->whereColumn('students.id', 'exams.student_id')
-                        ->groupBy('exams.student_id')
-                        ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
-                }, '>', 0)->count();
-
-            $students_with_same_points = Student::where('stream_id', $streamId)
-                ->where(function ($query) use ($totalPoints, $studentId) {
-                    $query->selectRaw('SUM(exams.points)')
-                        ->from('exams')
-                        ->whereColumn('students.id', 'exams.student_id')
-                        ->where('exams.student_id', '<', $studentId)
-                        ->groupBy('exams.student_id')
-                        ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
-                }, '>', 0)->count();
-
-                $stream_position = $students_with_higher_points + $students_with_same_points + 1;
-
-                return $stream_position;
-        }
-
-
-        public function calculateOverallPosition($studentId, $totalPoints)
-        {
-            $student = Student::find($this->studentId);
-            if (!$student) {
-                return;
-            }
-
-        $students_with_higher_points = Student::where('form', $student->form)
+    public function calculateStreamPosition($studentId, $totalPoints, $streamId)
+    {
+        // Count students with higher points in the same stream
+        $students_with_higher_points = Student::where('stream_id', $streamId)
             ->where(function ($query) use ($totalPoints) {
                 $query->selectRaw('SUM(exams.points)')
                     ->from('exams')
@@ -259,44 +276,96 @@ new class extends Component {
                     ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
             }, '>', 0)->count();
 
-        $students_with_same_points = Student::where('form', $student->form)
-            ->where(function ($query) use ($totalPoints, $studentId) {
+        // Count students with the same points in the same stream
+        $students_with_same_points = Student::where('stream_id', $streamId)
+            ->where(function ($query) use ($totalPoints) {
                 $query->selectRaw('SUM(exams.points)')
                     ->from('exams')
                     ->whereColumn('students.id', 'exams.student_id')
-                    ->where('exams.student_id', '<', $studentId)
                     ->groupBy('exams.student_id')
                     ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
             }, '>', 0)->count();
 
-        $overall_position = $students_with_higher_points + $students_with_same_points + 1;
+        // Calculate stream position
+        $stream_position = $students_with_higher_points + 1;
+
+        return $stream_position;
+    }
+
+
+    public function calculateOverallPosition($studentId, $totalPoints)
+    {
+        // Find student by ID
+        $student = Student::find($studentId);
+        // If student not found, return early
+        if (!$student) {
+            return null;
+        }
+
+        // Count students with higher points in the same form
+        $students_with_higher_points = Student::where('form', $student->form)
+            ->where(function ($query) use ($totalPoints) {
+                $query->selectRaw('SUM(exams.points)')
+                    ->from('exams')
+                    ->whereColumn('students.id', 'exams.student_id')
+                    ->groupBy('exams.student_id')
+                    ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
+            })->count();
+
+        // Count students with the same points in the same form
+        $students_with_same_points = Student::where('form', $student->form)
+            ->where(function ($query) use ($totalPoints) {
+                $query->selectRaw('SUM(exams.points)')
+                    ->from('exams')
+                    ->whereColumn('students.id', 'exams.student_id')
+                    ->groupBy('exams.student_id')
+                    ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
+            })->count();
+
+        // Calculate overall position
+        $overall_position = $students_with_higher_points + 1;
 
         return $overall_position;
     }
 
-     public function with(): array
-     {
+    // Refresh the data
+    public function refreshData()
+    {
+        // Fetch the student record from the database
         $this->updateExamData();
+        $this->render();
+    }
+
+    public function with(): array
+    {
+        // Update exam data for the current student
+        $this->updateExamData();
+
+        // Find the student by ID along with related exams and details
         $student = Student::with('exams', 'details')->find($this->studentId);
 
-        // Fetch the school setting
+        // Fetch the school settings
         $this->schoolSettings = SchoolSettings::first();
 
+        // If no student data is found, return an error message
         if (!$student) {
             return [
                 'error_message' => 'No student data found for the given ID',
-                'schoolSettings' => $this->schoolSettings, // Pass the school setting to your view
+                'schoolSettings' => $this->schoolSettings, // Pass the school settings to the view
             ];
         }
 
+        // Calculate the student's overall position based on total points
         $overallPositions = $this->calculateOverallPosition($student->id, $this->totalPoints);
+        // Count the total number of students in the same form
         $totalStudents = Student::where('form', $student->form)->count();
 
+        // Prepare the view data array
         $viewData = [
             'student' => $student,
             'overallPositions' => $overallPositions,
             'totalStudents' => $totalStudents,
-            'schoolSettings' => $this->schoolSettings, // Pass the school setting to your view
+            'schoolSettings' => $this->schoolSettings, // Pass the school settings to the view
             'schoolMotto' => $this->schoolSettings ? $this->schoolSettings->school_motto : null, // Add the school motto to the view data
             'schoolVision' => $this->schoolSettings ? $this->schoolSettings->school_vision : null, // Add the school vision to the view data
             'totalExam1' => $this->totalExam1,
@@ -311,14 +380,20 @@ new class extends Component {
             'averageGrade' => $this->averageGrade,
         ];
 
+        // Calculate the student's position within their stream
         $streamPositions = $this->calculateStreamPosition($student->id, $this->totalPoints, $student->stream_id);
+        // Count the total number of students in the same stream
         $studentsInStream = Student::where('stream_id', $student->stream_id)->count();
+        
+        // Add stream positions and total students in the stream to the view data
         $viewData['streamPositions'] = $streamPositions;
         $viewData['studentsInStream'] = $studentsInStream;
 
+        // Merge exams data with view data and return
         return array_merge($viewData, ['exams' => $this->exams]);
     }
-};?>
+}; ?>
+
 
 <div class="container mx-auto max-w-5xl">
     <div class="page-break">
