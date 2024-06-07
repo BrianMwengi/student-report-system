@@ -244,25 +244,25 @@ new class extends Component {
         return $gradeToRemarkMapping[$grade] ?? '';
     }
 
-    public function calculateSubjectPosition($subjectId, $average, $form, $streamId)
+    public function calculateSubjectPosition($subjectId, $average, $form)
     {
-        // Retrieve exams for the given subject, form, and stream
+        // Retrieve exams for the given subject and form
         $studentsExams = Exam::where('subject_id', $subjectId)
-        // Retrieve students with the given form and stream e.g. form 1, stream 1
-            ->whereHas('student', function ($query) use ($form, $streamId) {
-                $query->where('form', $form)
-                      ->where('stream_id', $streamId);
+            // Retrieve students with the given form (all streams within the form)
+            ->whereHas('student', function ($query) use ($form) {
+                $query->where('form', $form);
             })->get();
-    
-        // Count students with higher average scores e.g. average > 70 then count 
+
+        // Count students with higher average scores
         $higherScores = $studentsExams->filter(function ($exam) use ($average) {
-            // return true if the average score is higher than the given average e.g. 70
+            // Return true if the average score is higher than the given average
             return $exam->average > $average;
         });
-    
-        // Position is the count of higher scores plus one e.g. 3 higher scores + 1 = 4
+
+        // Position is the count of higher scores plus one
         return $higherScores->count() + 1;
     }
+
 
     public function calculateStreamPosition($studentId, $totalPoints, $streamId)
     {
@@ -295,38 +295,38 @@ new class extends Component {
 
     public function calculateOverallPosition($studentId, $totalPoints)
     {
-        // Find student by ID
-        $student = Student::find($studentId);
-        // If student not found, return early
+        // Find the student by ID
+        $student = Student::find($this->studentId);
+        
+        // If the student is not found, return early
         if (!$student) {
-            return null;
+            return;
         }
 
-        // Count students with higher points in the same form
+        // Query to count students with higher points in the same form
         $students_with_higher_points = Student::where('form', $student->form)
-            ->where(function ($query) use ($totalPoints) {
-                $query->selectRaw('SUM(exams.points)')
-                    ->from('exams')
-                    ->whereColumn('students.id', 'exams.student_id')
-                    ->groupBy('exams.student_id')
-                    ->havingRaw('SUM(exams.points) > ?', [$totalPoints]);
+            ->whereHas('exams', function ($query) use ($totalPoints) {
+                $query->selectRaw('SUM(points) as total_points')
+                    ->groupBy('student_id')
+                    ->havingRaw('total_points > ?', [$totalPoints]);
             })->count();
 
-        // Count students with the same points in the same form
+        // Query to count students with the same points but lower student IDs
         $students_with_same_points = Student::where('form', $student->form)
-            ->where(function ($query) use ($totalPoints) {
-                $query->selectRaw('SUM(exams.points)')
-                    ->from('exams')
-                    ->whereColumn('students.id', 'exams.student_id')
-                    ->groupBy('exams.student_id')
-                    ->havingRaw('SUM(exams.points) = ?', [$totalPoints]);
-            })->count();
+            ->whereHas('exams', function ($query) use ($totalPoints, $studentId) {
+                $query->selectRaw('SUM(points) as total_points')
+                    ->groupBy('student_id')
+                    ->havingRaw('total_points = ?', [$totalPoints]);
+            })
+            ->where('id', '<', $studentId) // Filter to include only students with lower IDs
+            ->count();
 
-        // Calculate overall position
-        $overall_position = $students_with_higher_points + 1;
+        // Calculate the overall position
+        $overall_position = $students_with_higher_points + $students_with_same_points + 1;
 
         return $overall_position;
     }
+
 
     // Refresh the data
     public function refreshData()
