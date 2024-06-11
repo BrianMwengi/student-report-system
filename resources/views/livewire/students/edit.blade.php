@@ -1,5 +1,4 @@
 <?php
-
 use Livewire\Volt\Component;
 use App\Models\Student;
 use App\Models\Exam;
