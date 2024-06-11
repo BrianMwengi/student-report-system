@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Exam;
 use App\Models\Student;
 use App\Models\Subject;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
