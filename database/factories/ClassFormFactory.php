@@ -7,17 +7,39 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ClassForm>
  */
-class ClassFormFactory extends Factory
+class ClassModelFactory extends Factory
 {
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ClassForm::class;
+
     /**
      * Define the model's default state.
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function definition(): array
+    public function definition()
     {
+        static $formNumber = 1;
+
+        // Assuming 'name' field is your form number
+        $formName = 'Form ' . $formNumber;
+
+        // Increment formNumber for next creation
+        $formNumber++;
+
+        // Reset after form 4
+        if ($formNumber > 4) {
+            $formNumber = 1;
+        }
+
         return [
-            //
+            // Assuming there is a 'name' field in your 'classes' table
+            'name' => $formName,
+            // add other fields here...
         ];
     }
 }

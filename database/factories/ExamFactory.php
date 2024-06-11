@@ -10,14 +10,26 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ExamFactory extends Factory
 {
     /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Exam::class;
+
+    /**
      * Define the model's default state.
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            //
+            'student_id' => Student::all()->random()->id,
+            'subject_id' => Subject::all()->random()->id,
+            'exam1' => $this->faker->numberBetween($min = 0, $max = 30),
+            'exam2' => $this->faker->numberBetween($min = 0, $max = 30),
+            'exam3' => $this->faker->numberBetween($min = 0, $max = 70),
+            'teacher' => $this->faker->name,
         ];
     }
 }
