@@ -58,3 +58,4 @@ class ExamSeeder extends Seeder
         return $initials;
     }
 }
+
