@@ -9,6 +9,9 @@ use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
+use App\Jobs\UpdateExamScoresJob;
+use Illuminate\Support\Facades\DB;
+
 class ExamSeeder extends Seeder
 {
     public function run(): void
@@ -35,6 +38,9 @@ class ExamSeeder extends Seeder
                             'exam3' => rand(0, 70),  // Replace with your logic
                             'teacher' => $initials, 
                         ]);
+
+                        UpdateExamScoresJob::dispatch($exam);
+                        
                     } catch (\Exception $e) {
                         Log::error('Error creating exam record: ' . $e->getMessage());
                     }
