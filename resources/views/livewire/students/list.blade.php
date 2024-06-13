@@ -135,7 +135,7 @@ new class extends Component {
     }
 }; ?>
 <div>
-    <div class="container p-6 bg-white shadow-md rounded-lg">
+    <div class="p-6 bg-white shadow-md rounded-lg">
         <div class="flex justify-between items-center mb-3">
             <div class="col-auto">
                 <label for="form" class="block text-sm font-medium text-gray-700">Select Form:</label>

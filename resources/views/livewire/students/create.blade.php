@@ -85,7 +85,7 @@ new class extends Component {
     }; ?>
 
 <div>
-    <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
+    <div class="p-6 bg-white shadow-md rounded-lg">
         <h2 class="mb-4 text-2xl font-bold">Add Student Details</h2>
     
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>

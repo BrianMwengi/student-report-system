@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @media print {
     .print-button,
     .go-back-button,
-    .navigation-bar {
+    .navigation-bar,
+    .sidebar { /* Hide sidebar in print mode */
         display: none;
     }
 
@@ -18,6 +18,7 @@
     * {
         box-shadow: none !important;
     }
+
     body {
         font-size: 9pt; /* Reduce the font size */
         width: 100%;
@@ -25,56 +26,59 @@
         bottom: 0; /* Set bottom to 0 */
         box-sizing: border-box;
     }
+
     .comment-area {
         height: 10px;
         align-items: center;
         justify-content: center;
     }
-  
-      hr {
-          margin-top: 8px;
-      }
-  
-      .fees {
-          height: 70px;
-      }
-  
-      .date {
-          padding-left: 10px;
-      }
-  
-      .small-text {
-         position: relative;
-         bottom: 19%;
-      }
-      
-      img {
-          max-width: 100%; /* Prevent large images from breaking layout */
-      }
-      
-      /* Set elements to 100% width */
-      .content, .main {
-          width: 100%;
-          margin: 0;
-          float: none;
-      }
-  
-      /* Set margins for printing */
-      @page {
-          margin: 0.5cm;
-      }
-  
-      .below-table-content {
-          font-size: 1em; /* Adjust as needed */
-          padding: 0.15em; /* Adjust as needed */
-          margin: 0.01em; /* Adjust as needed */
-      }
-      .below-table-content .grid {
-          margin-bottom: 0.1em; /* Adjust as needed */
-      }
-      .below-table-content textarea {
-          padding: 0.25em; /* Adjust as needed */
-      } 
+
+    hr {
+        margin-top: 8px;
+    }
+
+    .fees {
+        height: 70px;
+    }
+
+    .date {
+        padding-left: 10px;
+    }
+
+    .small-text {
+        position: relative;
+        bottom: 19%;
+    }
+
+    img {
+        max-width: 100%; /* Prevent large images from breaking layout */
+    }
+
+    /* Set elements to 100% width */
+    .content, .main, .main-content {
+        width: 100%;
+        margin: 0;
+        float: none;
+    }
+
+    /* Set margins for printing */
+    @page {
+        margin: 0.5cm;
+    }
+
+    .below-table-content {
+        font-size: 1em; /* Adjust as needed */
+        padding: 0.15em; /* Adjust as needed */
+        margin: 0.01em; /* Adjust as needed */
+    }
+
+    .below-table-content .grid {
+        margin-bottom: 0.1em; /* Adjust as needed */
+    }
+
+    .below-table-content textarea {
+        padding: 0.25em; /* Adjust as needed */
+    }
 }
 
 .logo {
@@ -89,7 +93,7 @@
     position: relative;
     top: 8px;
 }
-    
+
 .centered-header {
     text-align: center;
 }
@@ -112,7 +116,6 @@
 }
 
 .centered-table {
-    /* display: flex;  */
     justify-content: center;
     border: 2px solid black; /* Main border here */
     box-sizing: border-box;
@@ -125,12 +128,10 @@
 }
 
 .bordered-table th, .bordered-table td {
-    /* border: 1px solid black; */
     padding: 5px;
 }
 
 table.bordered-table {
-    /* No border here */
     border-collapse: collapse;
 }
 
@@ -149,5 +150,3 @@ table.bordered-table {
         padding: 3px; /* Adjust as needed */
     }
 }
-
-
