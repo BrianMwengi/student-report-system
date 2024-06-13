@@ -47,7 +47,7 @@ new class extends Component {
     
                 <form wire:submit = "submit" class="mt-4">
                     <div class="form-group">
-                        <input type="text" id="name" class="form-input @error('name') border-red-500 @enderror" wire:model="name" placeholder="Subject Name">
+                        <input type="text" id="name" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror" wire:model="name" placeholder="Subject Name">
     
                         @error('name')
                             <div class="text-red-500 mt-1">
