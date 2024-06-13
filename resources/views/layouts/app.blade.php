@@ -22,14 +22,14 @@
                     <div class="p-5">Dashboard</div>
                     <ul>
                         <li><a href="/dashboard" class="block py-2 px-4 hover:bg-gray-700">Dashboard</a></li>
+                        <li><a href="/subjects" class="block py-2 px-4 hover:bg-gray-700">Subjects</a></li>
                         <li><a href="/classforms" class="block py-2 px-4 hover:bg-gray-700">Class Forms</a></li>
+                        <li><a href="/streams" class="block py-2 px-4 hover:bg-gray-700">Streams</a></li>
+                        <li><a href="/students" class="block py-2 px-4 hover:bg-gray-700">Students</a></li>
                         <li><a href="/exams" class="block py-2 px-4 hover:bg-gray-700">Exams</a></li>
                         <li><a href="/schoolsettings" class="block py-2 px-4 hover:bg-gray-700">School Settings</a></li>
-                        <li><a href="/streams" class="block py-2 px-4 hover:bg-gray-700">Streams</a></li>
                         <li><a href="/studentactivities" class="block py-2 px-4 hover:bg-gray-700">Student Activities</a></li>
-                        <li><a href="/studentdetails" class="block py-2 px-4 hover:bg-gray-700">Student Details</a></li>
-                        <li><a href="/students" class="block py-2 px-4 hover:bg-gray-700">Students</a></li>
-                        <li><a href="/subjects" class="block py-2 px-4 hover:bg-gray-700">Subjects</a></li>
+                        <li><a href="/studentdetails" class="block py-2 px-4 hover:bg-gray-700">Student Details</a></li
                     </ul>
                 </div>
     
