@@ -76,7 +76,7 @@ new class extends Component {
         <h2 class="mb-4">Add Student Primary School Details</h2>
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <select class="form-select" wire:model="student_id" wire:change="updateAdmissionNumber" required>
+                <select class="form-select mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" wire:model="student_id" wire:change="updateAdmissionNumber" required>
                     <option value="">Select Student</option>
                     @foreach ($students as $student)
                         <option value="{{ $student->id }}">{{ $student->name }}</option>
@@ -86,24 +86,24 @@ new class extends Component {
             </div>
         
             <div class="mb-3">
-                <input type="text" wire:model="adm_no" class="form-input" placeholder="Admission Number" readonly>
+                <input type="text" wire:model="adm_no" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Admission Number" readonly>
                 @error('adm_no') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
         
             <div class="mb-3">
-                <input type="text" wire:model="primary_school" class="form-input" placeholder="Primary School" value="{{ $primary_school }}">
+                <input type="text" wire:model="primary_school" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Primary School" value="{{ $primary_school }}">
                 @error('primary_school') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3">
-                <input type="text" wire:model="kcpe_year" class="form-input" placeholder="KCPE Year" value="{{ $kcpe_year }}">
+                <input type="text" wire:model="kcpe_year" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="KCPE Year" value="{{ $kcpe_year }}">
                 @error('kcpe_year') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3">
-                <input type="text" wire:model="kcpe_marks" class="form-input" placeholder="KCPE Marks" value="{{ $kcpe_marks }}">
+                <input type="text" wire:model="kcpe_marks" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="KCPE Marks" value="{{ $kcpe_marks }}">
                 @error('kcpe_marks') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3">
-                <input type="text" wire:model="kcpe_position" class="form-input" placeholder="KCPE Position" value="{{ $kcpe_position }}">
+                <input type="text" wire:model="kcpe_position" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="KCPE Position" value="{{ $kcpe_position }}">
                 @error('kcpe_position') <div class="text-red-500">{{ $message }}</div> @enderror
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>

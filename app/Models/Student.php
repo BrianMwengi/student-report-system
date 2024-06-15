@@ -19,17 +19,17 @@ class Student extends Model
         'term',
         'form',
         'stream_id',
-        'form_sequence_number',    
+        'form_sequence_number',
     ];
 
-   // This function returns the stream that a student belongs to.
+    // This function returns the stream that a student belongs to.
     public function stream(): BelongsTo
     {
         return $this->belongsTo(Stream::class);
     }
 
-    // This function returns the form that a student belongs to.
-    public function form(): BelongsTo
+    // This function returns the class form that a student belongs to.
+    public function classForm(): BelongsTo
     {
         return $this->belongsTo(ClassForm::class, 'form', 'id');
     }
@@ -46,10 +46,9 @@ class Student extends Model
         return $this->hasOne(StudentDetail::class);
     }
 
-    // This function returns the student activity that belongs to a student.    
+    // This function returns the student activity that belongs to a student.
     public function activity(): HasOne
     {
         return $this->hasOne(StudentActivity::class);
     }
 }
-
