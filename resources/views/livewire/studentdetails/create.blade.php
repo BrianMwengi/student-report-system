@@ -33,7 +33,7 @@ new class extends Component {
         $this->studentDetails = $student;
     }
 
-
+    // This method will be triggered when the submit button is clicked
     public function submit()
     {
         // Validation rules
