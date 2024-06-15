@@ -34,6 +34,7 @@ new class extends Component {
         $this->students = Student::with('stream', 'classForm')->get();
     }
 
+    // Update the student details
     public function updatedAdmNo($adm_no)
     {
         // Fetch the student details including form and stream
