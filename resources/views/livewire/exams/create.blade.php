@@ -72,7 +72,7 @@ new class extends Component {
         $this->dispatch('success', message: "Exam details added successfully!");
         
         // Reset the input fields
-        $this->reset(['subject_id', 'exam1', 'exam2', 'exam3', 'teacher']);
+        $this->reset(['subject_id', 'exam1', 'exam2', 'exam3', 'teacher', 'studentDetails']);
     }
 }; ?>
 <div>
