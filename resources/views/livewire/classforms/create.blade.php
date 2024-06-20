@@ -16,8 +16,8 @@ new class extends Component {
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) {
-                    if (!preg_match('/[a-zA-Z].*[0-9]|[0-9].*[a-zA-Z]/', $value)) {
-                        $fail('The ' . $attribute . ' must include both a letter and a number.');
+                    if (!preg_match('/^Form\s[1-4]$/i', $value)) {
+                        $fail('The ' . $attribute . ' must be in the format "Form 1", "Form 2", "Form 3", or "Form 4".');
                     }
                 },
             ],
@@ -38,21 +38,20 @@ new class extends Component {
         // Proceed to create a new class with the validated data
         ClassForm::create(['name' => $this->name]);
 
-         // Show a success message or redirect to another page
-         $this->dispatch('success', message: "Class added successfully");
+        // Show a success message or redirect to another page
+        $this->dispatch('success', message: "Class added successfully");
 
         // Reset the 'name' property
         $this->name = '';
     }
 }; ?>
-
 <div>
     <div class="container mt-5 p-6 bg-white shadow-md rounded-lg">
         <h2 class="text-xl font-bold">Add Class</h2>
     
-        <form wire:submit="submit" class="mt-4">
+        <form wire:submit.prevent="submit" class="mt-4">
             <input type="text" id="name" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror" wire:model="name" placeholder="Class Name">
-           
+        
             @error('name')
                 <div class="text-red-500 mt-1">
                     {{ $message }}
@@ -61,6 +60,7 @@ new class extends Component {
     
             <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
         </form>
+
         {{-- Flash success message --}}
         <div x-data="{ open: false, message: '' }" 
              x-cloak

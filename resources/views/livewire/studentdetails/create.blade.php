@@ -16,32 +16,13 @@ new class extends Component {
     public $kcpe_position;
     public $student_id;
     public $students;
-    public $adm_no;
-    public $studentDetails;
 
-    // Mount the students
+    // Mount the component
     public function mount()
     {
         $this->students = Student::with('stream', 'classForm')->get();
     }
 
-        // Lifecycle hook for handling property updates
-    public function updatedStudentId($value)
-    {
-        $this->isLoading = true;
-
-        if ($value) {
-            $student = Student::where('id', $value)->with('stream', 'classForm')->first();
-            $this->adm_no = $student ? $student->adm_no : '';
-            $this->studentDetails = $student;
-        } else {
-            $this->reset(['adm_no', 'studentDetails']);
-        }
-
-        $this->isLoading = false;
-    }
-
-    // This method will be triggered when the submit button is clicked
     public function submit()
     {
         // Validation rules
@@ -51,7 +32,7 @@ new class extends Component {
         $student = Student::find($this->student_id);
 
         // Update or create student details
-        $studentDetails = StudentDetail::updateOrCreate(
+        StudentDetail::updateOrCreate(
             ['student_id' => $this->student_id],
             [
                 'primary_school' => $this->primary_school,
@@ -61,17 +42,15 @@ new class extends Component {
             ]
         );
 
-         // Show a success message or redirect to another page
-         $this->dispatch('success', message: "Student detail added successfully!");
+        // Show a success message or redirect to another page
+        $this->dispatch('success', message: "Student detail added successfully!");
 
-        // Reset input fields with a delay to allow the loading state to be visible
-        $this->reset(['student_id', 'adm_no', 'primary_school', 'kcpe_year', 'kcpe_marks', 'kcpe_position']);
-        $this->studentDetails = null;
+        // Reset input fields
+        $this->reset(['primary_school', 'kcpe_year', 'kcpe_marks', 'kcpe_position', 'student_id']);
     }
 
     public function with(): array
     {
-        // Return the students
         return ['students' => $this->students];
     }
 }; ?>
@@ -80,7 +59,7 @@ new class extends Component {
         <h2 class="mb-4">Add Student Primary School Details</h2>
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
             <div class="mb-3">
-                <select class="form-select mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" wire:model="student_id" wire:loading.attr="disabled" required>
+                <select class="form-select mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" wire:model="student_id" required>
                     <option value="">Select Student</option>
                     @foreach ($students as $student)
                         <option value="{{ $student->id }}">
@@ -89,24 +68,6 @@ new class extends Component {
                     @endforeach
                 </select>
                 @error('student_id') <div class="text-red-500 mt-1">{{ $message }}</div> @enderror
-            </div>
-        
-            <div wire:loading.remove wire:target="student_id, submit">
-                @if ($studentDetails)
-                    <div class="mb-3">
-                        <label class="form-label">Selected Student Details:</label>
-                        <div>
-                            Name: {{ $studentDetails->name }}<br>
-                            Admission Number: {{ $studentDetails->adm_no }}<br>
-                            Form: {{ $studentDetails->classForm->name ?? 'N/A' }}<br>
-                            Stream: {{ $studentDetails->stream->name ?? 'N/A' }}
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            <div wire:loading wire:target="student_id, submit" class="mb-3">
-                Loading student details...
             </div>
 
             <div class="mb-3">
