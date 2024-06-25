@@ -81,8 +81,8 @@ new class extends Component {
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <a href="{{ route('students') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add New Student</a>
             <a href="{{ route('exams') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add New Exam</a>
-            <a href="{{ route('students') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">View All Students</a>
-            <a href="{{ route('exams') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">View All Exams</a>
+            <a href="{{ route('') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">View All Students</a>
+            <a href="{{ route('') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">View All Exams</a>
         </div>
     
         <!-- Announcements or Notices -->

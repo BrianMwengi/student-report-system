@@ -26,12 +26,13 @@ Route::get('streams', [StreamController::class, 'index'])
     ->name('streams'); 
 
 Route::get('students', [StudentController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('students');
+     ->middleware(['auth', 'verified'])
+     ->name('students'); 
 
 Route::get('exams', [ExamController::class, 'index'])
-        ->middleware(['auth', 'verified'])
-        ->name('exams'); 
+     ->middleware(['auth', 'verified'])
+     ->name('exams'); 
+
 
 Route::get('studentdetails', [StudentDetailController::class, 'index'])
         ->middleware(['auth', 'verified'])
