@@ -52,7 +52,6 @@ new class extends Component {
         ];
     }
 };?>
-
 <div x-data="dashboardData({{ json_encode($studentsPerClass) }}, {{ json_encode($averageScoresBySubject) }})" x-init="initCharts()">
     <div class="container mx-auto p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -175,4 +174,3 @@ new class extends Component {
         }
     </script>
 </div>
-
