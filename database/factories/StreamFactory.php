@@ -1,14 +1,10 @@
 <?php
-
 namespace Database\Factories;
 
 use App\Models\Stream;
 use App\Models\ClassForm;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Stream>
- */
 class StreamFactory extends Factory
 {
     protected $model = Stream::class;
@@ -28,12 +24,12 @@ class StreamFactory extends Factory
             $formNumber = 1;
         }
 
-        // Assuming the ClassModel instances have been created before the Stream instances
-        $class_id = ClassForm::where('name', 'Form ' . $formNumber)->first()->id;
+        // Ensure a ClassForm instance exists or create one
+        $classForm = ClassForm::firstOrCreate(['name' => 'Form ' . $formNumber], ['name' => 'Form ' . $formNumber]);
 
         return [
             'name' => $streamName,
-            'class_id' => $class_id,
+            'class_id' => $classForm->id,
         ];
     }
 }
