@@ -5,6 +5,7 @@ use App\Models\Student;
 use App\Models\ClassForm;
 use App\Models\Subject;
 use App\Models\Exam;
+
 new class extends Component {
     public $totalStudents;
     public $totalTeachers;
@@ -129,31 +130,36 @@ new class extends Component {
         </div>
     </div>
 
+    <!-- Load Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Alpine.js component for handling dashboard data and charts
         function dashboardData(studentsPerClass, averageScoresBySubject) {
             return {
+                // Initialize data properties
                 studentsPerClass,
                 averageScoresBySubject,
+
+                // Method to initialize charts
                 initCharts() {
                     // Students per Class Chart
                     const studentsPerClassCtx = document.getElementById('students-per-class-chart').getContext('2d');
                     new Chart(studentsPerClassCtx, {
-                        type: 'bar',
+                        type: 'bar', // Set chart type to bar
                         data: {
-                            labels: Object.keys(this.studentsPerClass),
+                            labels: Object.keys(this.studentsPerClass), // Set x-axis labels
                             datasets: [{
-                                label: 'Students per Class',
-                                data: Object.values(this.studentsPerClass),
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1
+                                label: 'Students per Class', // Set dataset label
+                                data: Object.values(this.studentsPerClass), // Set data points
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Set background color
+                                borderColor: 'rgba(54, 162, 235, 1)', // Set border color
+                                borderWidth: 1 // Set border width
                             }]
                         },
                         options: {
                             scales: {
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true // Start y-axis at zero
                                 }
                             }
                         }
@@ -162,21 +168,21 @@ new class extends Component {
                     // Average Scores by Subject Chart
                     const averageScoresCtx = document.getElementById('average-scores-chart').getContext('2d');
                     new Chart(averageScoresCtx, {
-                        type: 'bar',
+                        type: 'bar', // Set chart type to bar
                         data: {
-                            labels: Object.keys(this.averageScoresBySubject).map(id => `Subject ${id}`),
+                            labels: Object.keys(this.averageScoresBySubject).map(id => `Subject ${id}`), // Set x-axis labels
                             datasets: [{
-                                label: 'Average Scores by Subject',
-                                data: Object.values(this.averageScoresBySubject),
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1
+                                label: 'Average Scores by Subject', // Set dataset label
+                                data: Object.values(this.averageScoresBySubject), // Set data points
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Set background color
+                                borderColor: 'rgba(75, 192, 192, 1)', // Set border color
+                                borderWidth: 1 // Set border width
                             }]
                         },
                         options: {
                             scales: {
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true // Start y-axis at zero
                                 }
                             }
                         }
@@ -186,3 +192,5 @@ new class extends Component {
         }
     </script>
 </div>
+
+
