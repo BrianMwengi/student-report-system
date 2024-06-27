@@ -5,7 +5,6 @@ use App\Models\Student;
 use App\Models\ClassForm;
 use App\Models\Subject;
 use App\Models\Exam;
-
 new class extends Component {
     public $totalStudents;
     public $totalTeachers;
@@ -16,16 +15,28 @@ new class extends Component {
     public $studentsPerClass = [];
     public $averageScoresBySubject = [];
 
+    // The mount method is called when the component is initialized
     public function mount()
     {
+        // Count total number of students
         $this->totalStudents = Student::count();
-        $this->totalTeachers = Exam::distinct('teacher')->count('teacher'); // Count unique teachers
+
+        // Count unique teachers based on the teacher field in exams table
+        $this->totalTeachers = Exam::distinct('teacher')->count('teacher');
+
+        // Count total number of classes
         $this->totalClasses = ClassForm::count();
+
+        // Count total number of subjects
         $this->totalSubjects = Subject::count();
+
+        // Get the latest 5 exam entries
         $this->recentExams = Exam::latest()->take(5)->get();
+
+        // Get the latest 5 student registrations
         $this->recentStudents = Student::latest()->take(5)->get();
 
-        // Fetch students per class
+        // Fetch the number of students per class
         $this->studentsPerClass = Student::select('form', \DB::raw('count(*) as total'))
             ->groupBy('form')
             ->pluck('total', 'form')
@@ -38,6 +49,7 @@ new class extends Component {
             ->toArray();
     }
 
+    // The with method returns an array of variables to pass to the view
     public function with(): array
     {
         return [
