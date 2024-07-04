@@ -15,8 +15,11 @@ new class extends Component {
                 'required',
                 'string',
                 'max:255',
+                 // Custom validation function
                 function ($attribute, $value, $fail) {
+                    // Check if the value matches the format "Form 1", "Form 2", "Form 3", or "Form 4"
                     if (!preg_match('/^Form\s[1-4]$/i', $value)) {
+                        // If the value does not match, fail the validation with a custom message
                         $fail('The ' . $attribute . ' must be in the format "Form 1", "Form 2", "Form 3", or "Form 4".');
                     }
                 },
