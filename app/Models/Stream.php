@@ -15,6 +15,11 @@ class Stream extends Model
         'class_id',
     ];
 
+    /**
+     * Get the class form that this stream belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function classForm(): BelongsTo
     {
         return $this->belongsTo(ClassForm::class, 'class_id');
