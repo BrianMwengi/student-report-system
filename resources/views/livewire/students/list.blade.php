@@ -77,8 +77,9 @@ new class extends Component {
             $student->delete();
         }
 
-        // Dispatch an event to refresh the student list and pass the message
+        // Flash the message
         session()->flash('studentDeleted', 'Student deleted successfully.');
+        $this->dispatch('studentDeleted');
     }
 
     #[On('student-created')]
@@ -151,12 +152,16 @@ new class extends Component {
             </div>
         </div>
 
-        {{--Flash message for student deletion--}}
-        @if (session()->has('studentDeleted'))
-            <div id="flash-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md my-4" role="alert">
-                {{ session('studentDeleted') }}
-            </div>
-        @endif
+      <!-- Flash message -->
+      <div x-data="{ show: false }" x-init="@this.on('studentDeleted', () => { show = true; setTimeout(() => { show = false }, 5000); })">
+        <div x-show="show" x-transition.duration.500ms>
+            @if (session()->has('studentDeleted'))
+                <div id="flash-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md my-4" role="alert">
+                    {{ session('studentDeleted') }}
+                </div>
+            @endif
+        </div>
+    </div> 
 
     <div class="bg-white shadow overflow-x-auto sm:rounded-md">
         <table class="min-w-full divide-y divide-gray-200">
@@ -246,14 +251,4 @@ new class extends Component {
     });
 </script>
 @endscript
-
-{{-- Hide flash message for student deleted --}}
-<script>
-    setTimeout(function() {
-        const element = document.getElementById('flash-message');
-        if (element) {
-            element.style.display = 'none';
-        }
-    }, 5000); // Hide after 5 seconds
-</script>
 
