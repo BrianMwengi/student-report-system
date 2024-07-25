@@ -48,14 +48,6 @@ new class extends Component {
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
 
-    // Listen for the student-deleted event
-    #[On('studentDeleted')]
-    public function studentDeleted($message)
-    {
-        session()->flash('message', $message);
-        $this->render();
-    }
-
     public function confirmDelete($id)
     {
         $this->dispatch('show-delete-confirmation', ['id' => $id]);
