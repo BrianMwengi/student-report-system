@@ -115,22 +115,26 @@ new class extends Component {
         }
     }
 
-    // Update student details
+    // Update or create student details
     private function updateStudentDetails(): void
     {
-        $studentDetails = StudentDetail::where('student_id', $this->studentId)->first();
-        // If the student details are found, update the details
-        if ($studentDetails) {
-            $kcpeDetails = array_filter([
-                'primary_school' => $this->primary_school,
-                'kcpe_marks' => $this->kcpe_marks,
-                'kcpe_year' => $this->kcpe_year,
-                'kcpe_position' => $this->kcpe_position,
-            ]);
-            if (!empty($kcpeDetails)) {
-                $studentDetails->update($kcpeDetails);
-            }
-        }
+        // Filter out null or empty values from the kcpeDetails array
+        $kcpeDetails = array_filter([
+            'student_id' => $this->studentId,
+            'primary_school' => $this->primary_school,
+            'kcpe_marks' => $this->kcpe_marks,
+            'kcpe_year' => $this->kcpe_year,
+            'kcpe_position' => $this->kcpe_position,
+        ]);
+
+        // Ensure student_id is always present in the array
+        $kcpeDetails['student_id'] = $this->studentId;
+
+        // Update or create the student details
+        StudentDetail::updateOrCreate(
+            ['student_id' => $this->studentId],
+            $kcpeDetails
+        );
     }
 
     // Update or create exam details 
