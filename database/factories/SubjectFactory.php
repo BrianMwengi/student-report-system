@@ -23,19 +23,22 @@ use Illuminate\Database\Eloquent\Factories\Factory;
       *
       * @return array
       */
-     public function definition()
-     {
-         static $order = 0;
- 
-         $subjects = [
-             'English', 'Kiswahili', 'Mathematics', 'Biology', 'Physics',
-             'Chemistry', 'History', 'Geography', 'CRE', 'Agriculture',
-             'Computer Studies', 'Business Studies'
-         ];
- 
-         return [
-             'name' => $subjects[$order++ % count($subjects)],
-         ];
-     }
- }
- 
+
+    public function definition()
+    {
+        // Static variable to keep track of the order
+        static $order = 0;
+    
+        // List of subjects
+        $subjects = [
+            'English', 'Kiswahili', 'Mathematics', 'Biology', 'Physics',
+            'Chemistry', 'History', 'Geography', 'CRE', 'Agriculture',
+            'Computer Studies', 'Business Studies'
+        ];
+    
+        return [
+            // Assign a subject name from the list, cycling through the list using modulo
+            'name' => $subjects[$order++ % count($subjects)],
+        ];
+    }
+}
