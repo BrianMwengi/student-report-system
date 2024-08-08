@@ -21,8 +21,11 @@ class ExamSeeder extends Seeder
 
         $faker = Faker::create();
         
+        // Process students in chunks of 200 to avoid memory overload
         Student::chunk(200, function ($students) use ($subjectIds, $faker) {
+            // Iterate through each student in the current chunk
             foreach ($students as $student) {
+                // Iterate through each subject ID for the current student
                 foreach ($subjectIds as $subjectId) {
                     try {
                         // Generate a full name
@@ -52,7 +55,7 @@ class ExamSeeder extends Seeder
     /**
      * Helper function to convert a full name to initials.
      */
-    
+
     private function getInitials($name)
     {
         // Split the name into parts using space as the delimiter
