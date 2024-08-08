@@ -20,7 +20,7 @@ class ExamSeeder extends Seeder
         $subjectIds = Subject::all('id')->pluck('id')->toArray();
 
         $faker = Faker::create();
-        
+
         // Process students in chunks of 200 to avoid memory overload
         Student::chunk(200, function ($students) use ($subjectIds, $faker) {
             // Iterate through each student in the current chunk
