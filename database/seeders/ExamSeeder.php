@@ -52,15 +52,22 @@ class ExamSeeder extends Seeder
     /**
      * Helper function to convert a full name to initials.
      */
+    
     private function getInitials($name)
     {
+        // Split the name into parts using space as the delimiter
         $parts = explode(' ', $name);
+        
+        // Initialize an empty string to hold the initials
         $initials = '';
-
+    
+        // Loop through each part of the name
         foreach ($parts as $part) {
+            // Append the uppercase first letter of each part to the initials
             $initials .= strtoupper($part[0]);
         }
-
+    
+        // Return the concatenated initials
         return $initials;
     }
 }
