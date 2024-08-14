@@ -24,6 +24,7 @@ class UpdateExamScoresJob implements ShouldQueue
      */
     public function __construct(Exam $exam)
     {
+        // Assign the exam to the $exam property
         $this->exam = $exam;
     }
 
